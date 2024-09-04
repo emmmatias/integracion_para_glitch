@@ -19,7 +19,7 @@ const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 let url = "https://app-tienda-nube.onrender.com/hook_stores";
 const db_path = path_1.default.resolve(__dirname, 'users.db');
-const vista_path = path_1.default.resolve(__dirname, '../../../vistas/registro.pug');
+const vista_path = path_1.default.resolve(__dirname, '../../vistas/registro.pug');
 const carrier = {
     "name": "Flash Now Envíos",
     "callback_url": "https://app-tienda-nube.onrender.com/costos",

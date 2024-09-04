@@ -17,17 +17,32 @@ const passport_1 = __importDefault(require("passport"));
 const path_1 = __importDefault(require("path"));
 const auth_1 = require("../features/auth");
 const product_1 = require("../features/product");
+const { time } = require("console");
+const dotenv_1 = __importDefault(require("dotenv"))
 const sqlite3_1 = __importDefault(require("sqlite3"));
 const csv_parser_1 = __importDefault(require("csv-parser"));
 const fs_1 = __importDefault(require("fs"));
+const admin_vista = path_1.default.resolve(__dirname, '../vistas/admin.pug')
+dotenv_1.default.config({
+    path: path_1.default.resolve(".env"),
+});
 let saldo = 0;
-
 let valores = [];
 let date = new Date();
 let mañana = date.setDate(date.getDate() + 1);
 let pasado_mañana = date.setDate(date.getDate() + 2);
 let data;
+let items1 = []
 let row;
+let db_admins_path = path_1.default.join(__dirname, './admins.db')
+const admins_db = new sqlite3_1.default.Database(db_admins_path, sqlite3_1.default.OPEN_READWRITE | sqlite3_1.default.OPEN_CREATE, (err) => {
+    if (err) {
+        console.error('Error en la conexión:', err);
+    }
+    else {
+        console.log('Conexión a la base de datos establecida');
+    }
+})
 let db_precios = path_1.default.join(__dirname, '../features/auth/precios.db');
 let db_path = path_1.default.join(__dirname, '../features/auth/users.db');
 let pedidos_hook = 'https://app-tienda-nube.onrender.com/envios_hook';
@@ -40,6 +55,50 @@ const user_db = new sqlite3_1.default.Database(db_path, sqlite3_1.default.OPEN_R
     }
 });
 const routes = (0, express_1.Router)();
+
+routes.post("/alta_admin", (req, res) =>{
+    let contra = process.env.ADMIN
+    let body = req.body
+    if(contra != req.body.contrasena){
+        res.sendStatus(403)
+        res.end('PROHIBIDO, contraseña invalida')
+    }else{
+        sqlite3_1.default.serialize(() => {
+            admins_db.run('CREATE TABLE IF NOT EXISTS admins (admin TEXT NOT NULL, contrasena TEXT NOT NULL)', (err) =>{
+                if(err){
+                    console.error(err)
+                }
+            })
+            admins_db.run('INSERT INTO admins VALUES (?,?)', [body.usuario, body.contrasena], (err)=>{
+                if(err){
+                    console.error(err)
+                }
+            })
+        })
+        
+    }
+})
+
+routes.get("/admin", (req, res) =>{
+    admins_db.get('SELECT admin from admins', (err, row) =>{
+        if(row.admin){
+            res.render(admin_vista, {
+                usuario: row.admin,
+                contrasena: row.contrasena
+            })
+        }
+    })
+})
+
+function enviarDatos(obj){
+ fetch('https://script.google.com/macros/s/AKfycbzVLGJSFWWv9rnieMrxtyfG1uiXpAB0itZRWcaMdeTkN_FjkZwaP_Xs7qnTpqrM9k94/exec',{
+    method: 'POST',
+    headers:{
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(obj)
+ })
+}
 
 routes.get("/", (req, res) =>{
     res.send("hola")
@@ -74,9 +133,11 @@ routes.post('envios_hook', (req, res) => {
 routes.get('/modif', (req, res) => {
     user_db.serialize(() => {
         //user_db.run('UPDATE users set saldo = 0')
-        //user_db.run('delete from pedidos')
+        user_db.run('delete from pedidos')
+        user_db.run('delete from carrier')
+        user_db.run('delete from users')
         //user_db.run('drop table pedidos')
-        user_db.run(`CREATE TABLE IF NOT EXISTS pedidos (
+        /*user_db.run(`CREATE TABLE IF NOT EXISTS pedidos (
   fecha_retiro TEXT,
   id_tienda NUMBER,
   contacto_tienda TEXT,
@@ -91,7 +152,7 @@ routes.get('/modif', (req, res) => {
   metodo_pago TEXT,
   seguimiento TEXT
   )`);
-    });
+    */});
     res.send('cambio realizado');
 });
 //webhooks obligatorios
@@ -183,6 +244,25 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
                             if (error) {
                                 console.error(error);
                             }
+                            items1.push(e)
+                            console.log(items1)
+                            //hacer la cargua a flash
+                            let envio_flash = {
+                                id_envio : e,
+                                fecha_retiro : new Date(mañana).toLocaleDateString(),
+                                id_tienda : store_data.user_id,
+                                contacto_tienda : store_data.contacto_tienda,
+                                direccion_tienda : store_data.direccion,
+                                telefono_tienda : store_data.whatsapp,
+                                fecha_entrega : new Date(pasado_mañana).toLocaleDateString(),
+                                precio_envio : data.shipping_cost_owner,
+                                nombre_cliente : data.contact_name,
+                                direccion_cliente : `${data.shipping_address.address} ${data.shipping_address.number}, ${data.shipping_address.floor} ${data.shipping_address.locality}`,
+                                telefono_clinete : data.contact_phone,
+                                metodo_pago : store_data.metodo_pago
+                            }
+                            enviarDatos(envio_flash)
+                            //console.log(data)
                             //hacer el informe de status de envío
                             let body1 = {
                                 shipping_tracking_number: `${data.id}`,
@@ -208,7 +288,12 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
         });
     };
     yield pro().then(() => {
-        res.sendFile(path_1.default.join(__dirname, '../../vistas/confirmacion.html'));
+        //console.log(`+++++++++++++++++++++++++++++++++++++++++++++++++++++++ ${items1}`)
+        res.render(path_1.default.join(__dirname,'../vistas/confirmacion.pug'),{
+            tab_title: "Ordenes agendedadas",
+            title: "Tus envíos fueron agregados"
+        })
+        //res.sendFile(path_1.default.join(__dirname, '../../vistas/confirmacion.html'));
     });
 }));
 routes.post("/costos", (req, res) => {
