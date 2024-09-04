@@ -32,7 +32,6 @@ let date = new Date();
 let mañana = date.setDate(date.getDate() + 1);
 let pasado_mañana = date.setDate(date.getDate() + 2);
 let data;
-let items1 = []
 let row;
 let db_admins_path = path_1.default.join(__dirname, './admins.db')
 const admins_db = new sqlite3_1.default.Database(db_admins_path, sqlite3_1.default.OPEN_READWRITE | sqlite3_1.default.OPEN_CREATE, (err) => {
@@ -100,11 +99,13 @@ function enviarDatos(obj){
  })
 }
 
-routes.get("/", (req, res) =>{
+routes.get("/user", (req, res) =>{
     res.send("hola")
 })
 routes.post("/registro", (req, res) => {
     console.log(req.body);
+    let usuario = req.body.usuario;
+    let contrasena = req.body.contrasena;
     let direccion = req.body.direccion;
     let contacto_tienda = req.body.contacto_tienda;
     let user_id = req.body.id;
@@ -113,15 +114,14 @@ routes.post("/registro", (req, res) => {
     let email = req.body.email;
     let telefono = req.body.telefono;
     let whatsapp = req.body.whatsapp;
-    user_db.run('UPDATE users set direccion = ?, cp_tienda = ?, metodo_pago = ?, contacto_tienda = ?, email = ?, whatsapp = ?, phone = ? WHERE user_id = ?', [direccion, cp_tienda, metodo_pago, contacto_tienda, email, whatsapp, telefono, user_id], (err) => {
+    user_db.run('UPDATE users set direccion = ?, usuario = ?, contrasena = ?, cp_tienda = ?, metodo_pago = ?, contacto_tienda = ?, email = ?, whatsapp = ?, phone = ? WHERE user_id = ?', [direccion, usuario, contrasena, cp_tienda, metodo_pago, contacto_tienda, email, whatsapp, telefono, user_id], (err) => {
         if (err) {
             console.error(err);
         }
         else {
-            res.send('gracias');
+            res.render(path_1.default.join(__dirname, '../vistas/usuario.pug'))
         }
     });
-    //res.render('usuario')
 });
 routes.post('envios_hook', (req, res) => {
     let id_pedido = req.body;
@@ -135,7 +135,8 @@ routes.get('/modif', (req, res) => {
         //user_db.run('UPDATE users set saldo = 0')
         user_db.run('delete from pedidos')
         user_db.run('delete from carrier')
-        user_db.run('delete from users')
+        user_db.run('drop table users')
+        //user_db.run('delete from users')
         //user_db.run('drop table pedidos')
         /*user_db.run(`CREATE TABLE IF NOT EXISTS pedidos (
   fecha_retiro TEXT,
@@ -244,8 +245,7 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
                             if (error) {
                                 console.error(error);
                             }
-                            items1.push(e)
-                            console.log(items1)
+                            
                             //hacer la cargua a flash
                             let envio_flash = {
                                 id_envio : e,

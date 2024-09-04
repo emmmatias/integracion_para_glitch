@@ -2,34 +2,85 @@ doctype html
 html
     head
         title= title
+    style.
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+            html, body {
+                height: 100%;
+                background-image: linear-gradient(180deg, #FFFFFF 60%, #f2295b 100%);
+            }
+            .container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+                background-color: #f0f0f0; 
+            }
+            .box {
+                font-family: Arial, Helvetica, sans-serif;
+                width: 90%; 
+                max-width: 400px; 
+                padding: 20px;
+                background-color: #ffffff; 
+                color: black;
+                text-align: center;
+                border-radius: 8px; 
+            }
+            .box input{
+                border-radius: 8px;
+            }
+            .box label{
+                margin-top: 3%;
+            }
     body
-        h1= formTitle
-        form#miform(action=formaction, method='post')
-            div
-                input#user_id(type="text", value=id, name='id', hidden)
-                label(for='contacto_tienda') contacto_tienda:
-                input#contacto_tienda(type='text', name='contacto_tienda', placeholder='Nombre de la tienda', required)
-                br
-                label(for='direccion') Direccion:
-                input#direccion(type='text', name='direccion', placeholder=direccion, value=direccion, required)
-                br
-                label(for='email') Email:
-                input#email(type='email', name='email', placeholder=email, value=email, required)
-                br
-                label(for='cp_tienda') Código postal:
-                input#cp_tienda(type='text', name='cp_tienda', placeholder='Código Postal', value='No definido', required)
-                br
-                label(for='whatsapp') WhatsApp:
-                input#whatsapp(type='text', name='whatsapp', placeholder=whatsapp, value=whatsapp, required)
-                br
-                label(for='telefono') Telefono:
-                input#telefono(type='text', name='telefono', placeholder=telefono, value=telefono, required)
-                br
-                label(for='metodo_pago') metodo_pago:
-                input#metodo_pago(type='text', name='metodo_pago', placeholder='Tu método de pago', required)
-                br
-                button(type='submit') Submit
-        p Los datos serán utilizados para poder dar de alta su usuario en nuestro sistema, la dirección debe ser la de retiro de los paquetes. Como por ejemplo 'av santa fe 4465, piso, depto, localidad'
+        div.container
+            div.box
+                h1= formTitle
+                form#miform(action=formaction, method='post')
+                    div
+                        input#user_id(type="text", value=id, name='id', hidden)
+                        label(for='usuario') Tu nombre:
+                        br
+                        input#usuario(type='text', name='contacto_tienda', placeholder='Nombre de la tienda', required)
+                        br
+                        label(for='contrasena') Tu nombre:
+                        br
+                        input#contrasena(type='text', name='contrasena', placeholder='contraseña', required)
+                        br
+                        label(for='contacto_tienda') Tu nombre:
+                        br
+                        input#contacto_tienda(type='text', name='contacto_tienda', placeholder='Nombre de la tienda', required)
+                        br
+                        label(for='direccion') Direccion de retiro:
+                        br
+                        input#direccion(type='text', name='direccion', placeholder=direccion, value=direccion, required)
+                        br
+                        label(for='email') Email:
+                        br
+                        input#email(type='email', name='email', placeholder=email, value=email, required)
+                        br
+                        label(for='cp_tienda') Código postal:
+                        br
+                        input#cp_tienda(type='text', name='cp_tienda', placeholder='Código Postal', value='No definido', required)
+                        br
+                        label(for='whatsapp') WhatsApp:
+                        br
+                        input#whatsapp(type='text', name='whatsapp', placeholder=whatsapp, value=whatsapp, required)
+                        br
+                        label(for='telefono') Telefono:
+                        br
+                        input#telefono(type='text', name='telefono', placeholder=telefono, value=telefono, required)
+                        br
+                        label(for='metodo_pago') metodo de pago:
+                        br
+                        input#metodo_pago(type='text', name='metodo_pago', placeholder='Tu método de pago', required)
+                        br
+                        br
+                        button(type='submit') Enviar
+                p Los datos serán utilizados para poder dar de alta su usuario en nuestro sistema, la dirección debe ser la de retiro de los paquetes. Como por ejemplo 'av santa fe 4465, piso, depto, localidad'
     script.
         let form = document.getElementById('miform');
 
@@ -47,6 +98,8 @@ html
             event.preventDefault();
             
             let validador = 0;
+            let usuario = document.querySelector('#usuario').value
+            let contrasena = document.querySelector('#contrasena').value
             let user_id = document.querySelector('#user_id').value
             let metodo_pago = document.querySelector('#metodo_pago').value;
             let telefono = document.querySelector('#telefono').value;
@@ -82,6 +135,8 @@ html
             
             if (validador === 4) {
                 let body = {
+                    contrasena,
+                    usuario,
                     id: user_id,
                     telefono,
                     whatsapp,
@@ -98,6 +153,14 @@ html
                     headers: {
                         'Content-Type': 'application/json'
                     }
+                })
+                .then(response => {
+                    if(response.ok){
+                         return response.text()
+                    }
+                })
+                .then(html => {
+                    document.body.innerHTML = html
                 })
                 .catch((error) => {
                     console.error('Error:', error);

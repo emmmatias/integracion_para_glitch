@@ -56,6 +56,8 @@ class AuthenticationController {
                 user_db.serialize(() => __awaiter(this, void 0, void 0, function* () {
                     user_db.run(`CREATE TABLE IF NOT EXISTS users (
           user_id TEXT NOT NULL,
+          usuario TEXT NOT NULL,
+          contrasena TEXT NOT NULL,
           access_token TEXT NOT NULL,
           token_type TEXT NOT NULL,
           scope TEXT NOT NULL,
