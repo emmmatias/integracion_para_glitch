@@ -30,7 +30,7 @@ let data;
 let row;
 let db_precios = path_1.default.join(__dirname, '../features/auth/precios.db');
 let db_path = path_1.default.join(__dirname, '../features/auth/users.db');
-let pedidos_hook = 'https://vmpk47rv-8000.brs.devtunnels.ms/envios_hook';
+let pedidos_hook = 'https://app-tienda-nube.onrender.com/envios_hook';
 const user_db = new sqlite3_1.default.Database(db_path, sqlite3_1.default.OPEN_READWRITE | sqlite3_1.default.OPEN_CREATE, (err) => {
     if (err) {
         console.error('Error en la conexión:', err);
@@ -186,7 +186,7 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
                             //hacer el informe de status de envío
                             let body1 = {
                                 shipping_tracking_number: `${data.id}`,
-                                shipping_tracking_url: "https://vmpk47rv-8000.brs.devtunnels.ms/seguimiento",
+                                shipping_tracking_url: "https://app-tienda-nube.onrender.com/seguimiento",
                                 notify_customer: true
                             };
                             let body2 = JSON.stringify(body1);

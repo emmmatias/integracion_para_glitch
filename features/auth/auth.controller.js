@@ -17,12 +17,12 @@ const auth_1 = require("../auth");
 const sqlite3_1 = __importDefault(require("sqlite3"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
-let url = "https://vmpk47rv-8000.brs.devtunnels.ms/hook_stores";
+let url = "https://app-tienda-nube.onrender.com/hook_stores";
 const db_path = path_1.default.resolve(__dirname, 'users.db');
 const vista_path = path_1.default.resolve(__dirname, '../../../vistas/registro.pug');
 const carrier = {
     "name": "Flash Now Envíos",
-    "callback_url": "https://vmpk47rv-8000.brs.devtunnels.ms/costos",
+    "callback_url": "https://app-tienda-nube.onrender.com/costos",
     "types": "ship"
 };
 const carrier_opt = {
