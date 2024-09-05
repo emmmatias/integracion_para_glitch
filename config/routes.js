@@ -99,21 +99,52 @@ function enviarDatos(obj){
  })
 }
 
+routes.post('/user_load', (req, res) => {
+    let usuario = req.body.usuario
+    let contrasena = req.body.contrasena
+    user_db.get('SELECT user_id, access_token, email, cp_tienda, contacto_tienda, direccion, whatsapp, saldo, metodo_pago FROM users WHERE usuario = ?  &  contrasena = ? ', [usuario, contrasena], (err, row) => {
+        if(!err){
+            let obj = {
+                usuario,
+                contrasena,
+                user_id: row.user_id,
+                contacto_tienda: row.contacto_tienda,
+                activo: row.activo,
+                direccion: row.direccion,
+                whatsapp: row.whatsapp,
+                metodo_pago: row.metodo_pago,
+                email: row.email,
+                cp_tienda: row.cp_tinda
+            }
+            res.render(path_1.default.join(__dirname, '../vistas/registro.pug'), obj)
+        }else if(err){
+            console.error(err)
+            res.statusCode = 500
+            res.statusMessage = 'Algo salio mal'
+        }
+    })
+})
+
 routes.get("/user", (req, res) =>{
-    res.send("hola")
+    res.render(path_1.default.join(__dirname, '../vistas/user.pug'))
+
+})
+
+routes.get("/", (req, res) =>{
+    res.render(path_1.default.join(__dirname, '../vistas/usuario.pug'))
 })
 routes.post("/registro", (req, res) => {
     console.log(req.body);
-    let usuario = req.body.usuario;
-    let contrasena = req.body.contrasena;
-    let direccion = req.body.direccion;
-    let contacto_tienda = req.body.contacto_tienda;
-    let user_id = req.body.id;
-    let cp_tienda = req.body.cp_tienda;
-    let metodo_pago = req.body.metodo_pago;
-    let email = req.body.email;
-    let telefono = req.body.telefono;
-    let whatsapp = req.body.whatsapp;
+    let usuario = req.body.usuario || "na";
+    let contrasena = req.body.contrasena || "na";
+    let direccion = req.body.direccion || "na";
+    let contacto_tienda = req.body.contacto_tienda || "na";
+    let user_id = req.body.id || "na";
+    let cp_tienda = req.body.cp_tienda || "na";
+    let metodo_pago = req.body.metodo_pago || "na";
+    let email = req.body.email || "na";
+    let telefono = req.body.telefono || "na";
+    let whatsapp = req.body.whatsapp || "na";
     user_db.run('UPDATE users set direccion = ?, usuario = ?, contrasena = ?, cp_tienda = ?, metodo_pago = ?, contacto_tienda = ?, email = ?, whatsapp = ?, phone = ? WHERE user_id = ?', [direccion, usuario, contrasena, cp_tienda, metodo_pago, contacto_tienda, email, whatsapp, telefono, user_id], (err) => {
         if (err) {
             console.error(err);
