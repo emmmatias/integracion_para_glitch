@@ -257,12 +257,12 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
                                 fecha_entrega : new Date(pasado_mañana).toLocaleDateString(),
                                 precio_envio : data.shipping_cost_owner,
                                 nombre_cliente : data.contact_name,
-                                direccion_cliente : `${data.shipping_address.address} ${data.shipping_address.number}, ${data.shipping_address.floor} ${data.shipping_address.locality}`,
+                                direccion_cliente : `${data.shipping_address.address} ${data.shipping_address.number}, ${data.shipping_address.floor} ${data.shipping_address.city}`,
                                 telefono_clinete : data.contact_phone,
                                 metodo_pago : store_data.metodo_pago
                             }
                             enviarDatos(envio_flash)
-                            //console.log(data)
+                            console.log(data)
                             //hacer el informe de status de envío
                             let body1 = {
                                 shipping_tracking_number: `${data.id}`,
@@ -329,7 +329,7 @@ routes.post("/costos", (req, res) => {
         });
         return aux;
     }
-    console.log(vol_total);
+    console.log(` volumen de pedido ${vol_total}`);
     let price;
     const compare = () => {
         return new Promise((resolve, reject) => {
@@ -337,13 +337,13 @@ routes.post("/costos", (req, res) => {
                 if (Number(cp_origen) <= 1400 && Number(cp_origen) >= 1000 && foundOrigin == false) {
                     zona_origen = 'CABA';
                     cordon_origen = 'CABA';
-                    vol_total > volmaxmoto ? costo_origen = 3300 : costo_origen = 3650;
+                    vol_total < volmaxmoto ? costo_origen = 3300 : costo_origen = 3650;
                     foundOrigin = true;
                 }
                 if (Number(cp_destino) <= 1400 && Number(cp_destino) >= 1000 && foundDestination == false) {
                     zona_destino = 'CABA';
                     cordon_destino = 'CABA';
-                    vol_total > volmaxmoto ? costo_destino = 3300 : costo_destino = 3650;
+                    vol_total < volmaxmoto ? costo_destino = 3300 : costo_destino = 3650;
                     foundDestination = true;
                 }
                 if (cp_origen == row.cp && foundOrigin == false) {

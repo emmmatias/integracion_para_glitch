@@ -42,15 +42,15 @@ html
                 form#miform(action=formaction, method='post')
                     div
                         input#user_id(type="text", value=id, name='id', hidden)
-                        label(for='usuario') Tu nombre:
+                        label(for='usuario') Ingresá tu DNI (será tu usuario):
                         br
-                        input#usuario(type='text', name='contacto_tienda', placeholder='Nombre de la tienda', required)
+                        input#usuario(type='text', name='usuario', placeholder='Tu usuario', required)
                         br
-                        label(for='contrasena') Tu nombre:
+                        label(for='contrasena') Creá una contraseña:
                         br
                         input#contrasena(type='text', name='contrasena', placeholder='contraseña', required)
                         br
-                        label(for='contacto_tienda') Tu nombre:
+                        label(for='contacto_tienda') Nombre de la tienda:
                         br
                         input#contacto_tienda(type='text', name='contacto_tienda', placeholder='Nombre de la tienda', required)
                         br
@@ -70,11 +70,11 @@ html
                         br
                         input#whatsapp(type='text', name='whatsapp', placeholder=whatsapp, value=whatsapp, required)
                         br
-                        label(for='telefono') Telefono:
+                        label(for='telefono') Teléfono:
                         br
                         input#telefono(type='text', name='telefono', placeholder=telefono, value=telefono, required)
                         br
-                        label(for='metodo_pago') metodo de pago:
+                        label(for='metodo_pago') Método de pago:
                         br
                         input#metodo_pago(type='text', name='metodo_pago', placeholder='Tu método de pago', required)
                         br
