@@ -7,7 +7,9 @@ html(lang="es")
     body
         form#miform(action="/ingreso", method="post")
             input#usuario(type="text", required)
+            br
             input#contrasena(type="text", required)
+            br
             button(type="submit") Ingresar
     script.
         let form = document.querySelector('#miform')
