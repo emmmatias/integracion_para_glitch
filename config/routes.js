@@ -165,30 +165,36 @@ routes.post('envios_hook', (req, res) => {
     res.end('proceso con exito');
 });
 routes.get('/modif', (req, res) => {
-    user_db.serialize(() => {
-        //user_db.run('UPDATE users set saldo = 0')
-        user_db.run('delete from pedidos')
-        user_db.run('delete from carrier')
-        user_db.run('drop table users')
-        //user_db.run('delete from users')
-        //user_db.run('drop table pedidos')
-        /*user_db.run(`CREATE TABLE IF NOT EXISTS pedidos (
-  fecha_retiro TEXT,
-  id_tienda NUMBER,
-  contacto_tienda TEXT,
-  direccion_tienda TEXT,
-  telefono_tienda TEXT,
-  fecha_entrega TEXT,
-  precio_envio TEXT,
-  nombre_cliente TEXT,
-  direccion_cliente TEXT,
-  telefono_cliente TEXT,
-  observaciones TEXT, 
-  metodo_pago TEXT,
-  seguimiento TEXT
-  )`);
-    */});
-    res.send('cambio realizado');
+    let code = req.query.code
+    if(code == process.env.ADMIN){
+        user_db.serialize(() => {
+            //user_db.run('UPDATE users set saldo = 0')
+            user_db.run('delete from pedidos')
+            user_db.run('delete from carrier')
+            user_db.run('drop table users')
+            //user_db.run('delete from users')
+            //user_db.run('drop table pedidos')
+            /*user_db.run(`CREATE TABLE IF NOT EXISTS pedidos (
+      fecha_retiro TEXT,
+      id_tienda NUMBER,
+      contacto_tienda TEXT,
+      direccion_tienda TEXT,
+      telefono_tienda TEXT,
+      fecha_entrega TEXT,
+      precio_envio TEXT,
+      nombre_cliente TEXT,
+      direccion_cliente TEXT,
+      telefono_cliente TEXT,
+      observaciones TEXT, 
+      metodo_pago TEXT,
+      seguimiento TEXT
+      )`);
+        */});
+        res.send('cambio realizado');
+    }else{
+        res.end('Código inválido')
+    }
+    
 });
 //webhooks obligatorios
 routes.post("/hook", (req, res) => {
