@@ -4,15 +4,49 @@ html(lang="es")
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         title Ajustes de perfil
+    style.
+         * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+            html, body {
+                height: 100%;
+                background-image: linear-gradient(180deg, #FFFFFF 60%, #f2295b 100%);
+            }
+            .container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+                background-color: #f0f0f0; 
+            }
+            .box {
+                font-family: Arial, Helvetica, sans-serif;
+                width: 90%; 
+                max-width: 400px; 
+                padding: 20px;
+                background-color: #ffffff; 
+                color: black;
+                text-align: center;
+                border-radius: 8px; 
+            }
+            .box input{
+                border-radius: 8px;
+            }
+            .box label{
+                margin-top: 5%;
+            }
     body
-        form#miform(action="/ingreso", method="post")
-            label(for="usuario") Usuario 
-            input#usuario(type="text", required)
-            br
-            label(for="contrasena") Contrasena 
-            input#contrasena(type="text", required)
-            br
-            button(type="submit") Ingresar
+        div.box
+            form#miform(action="/ingreso", method="post")
+                label(for="usuario") Usuario 
+                input#usuario(type="text", required)
+                br
+                label(for="contrasena") Contrasena 
+                input#contrasena(type="text", required)
+                br
+                button(type="submit") Ingresar
     script.
         let form = document.querySelector('#miform')
         form.addEventListener('submit', (event) =>{
