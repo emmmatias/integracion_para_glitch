@@ -51,8 +51,8 @@ html(lang="es")
         let form = document.querySelector('#miform')
         form.addEventListener('submit', (event) =>{
             event.preventDefault()
-            let usuario = document.queryselector('#usuario')
-            let contrasena = document.queryselector('#contrasena')
+            let usuario = document.querySelector('#usuario')
+            let contrasena = document.querySelector('#contrasena')
             fetch('/user_load', {
                     method: 'POST',
                     body: JSON.stringify({
