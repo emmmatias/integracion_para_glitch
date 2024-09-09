@@ -125,6 +125,8 @@ routes.post('/user_load', (req, res) => {
     })
 })
 
+
+
 routes.get("/user", (req, res) =>{
     res.render(path_1.default.join(__dirname, '../vistas/user.pug'))
 })
@@ -218,7 +220,24 @@ routes.get('/status_client', (req, res) => {
     let estados = ["dispatched", "received_by_post_office", "in_transit", "out_for_delivery", "delivery_attempt_failed", "delayed", "ready_for_pickup", "delivered", "returned_to_sender", "lost", "failure"];
 });
 //ruta para usuarios dentro de tienda nube
-routes.get("/users/:id", (req, res) => {
+routes.get("/descarga-db", (req, res) => {
+    if(req.query.code == process.env.ADMIN){
+        
+        fs.access(user_db, fs.constants.F_OK, (err) => {
+            if (err) {
+                return res.status(404).send('Base de datos no encontrada');
+            }
+    
+            
+            res.download(db_path, 'copia_usuarios.sqlite', (err) => {
+                if (err) {
+                    console.error('Error al descargar la base de datos:', err);
+                    res.status(500).send('Error al descargar la base de datos');
+                }
+            });
+        })
+
+    }
 });
 routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(req.query);
