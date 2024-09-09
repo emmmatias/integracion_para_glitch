@@ -99,7 +99,7 @@ function enviarDatos(obj){
  })
 }
 
-routes.post('/user_load', (req, res) => {
+routes.get('/user_load', (req, res) => {
     let usuario = req.body.usuario
     let contrasena = req.body.contrasena
     user_db.get('SELECT user_id, access_token, email, cp_tienda, contacto_tienda, direccion, whatsapp, saldo, metodo_pago FROM users WHERE usuario = ?  &  contrasena = ? ', [usuario, contrasena], (err, row) => {
@@ -126,8 +126,11 @@ routes.post('/user_load', (req, res) => {
 })
 
 routes.get("/user", (req, res) =>{
-    res.render(path_1.default.join(__dirname, '../vistas/user.pug'))
+    let usu
+    user_db.get
 
+    res.render(path_1.default.join(__dirname, '../vistas/user.pug'))
+    
 })
 
 routes.get("/", (req, res) =>{
