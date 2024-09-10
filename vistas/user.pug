@@ -32,15 +32,15 @@ html(lang="es")
         }
     body
         div.container
-        div.box
-            form#miform(action="/ingreso", method="post")
-                label(for="usuario") Usuario 
-                input#usuario(type="text", required)
-                br
-                label(for="contrasena") Contrasena 
-                input#contrasena(type="text", required)
-                br
-                button(type="submit") Ingresar
+            div.box
+                form#miform(action="/ingreso", method="post")
+                    label(for="usuario") Usuario 
+                    input#usuario(type="text", required)
+                    br
+                    label(for="contrasena") Contrasena 
+                    input#contrasena(type="text", required)
+                    br
+                    button(type="submit") Ingresar
     script.
         let form = document.querySelector('#miform')
         form.addEventListener('submit', (event) =>{
