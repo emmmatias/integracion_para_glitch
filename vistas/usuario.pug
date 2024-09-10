@@ -1,6 +1,8 @@
-html
+html(lang="es")
     head
-        title bienvenido
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title Bienvenido
         style.
             * {
                 box-sizing: border-box;
@@ -28,22 +30,24 @@ html
                 border-radius: 8px; 
             }
     body
-        div.container
-            div.box
+        .container
+            .box
                 h1 ¡¡Te damos la bienvenida a Flash Now!!
                 h3 La logística que es parte de tu equipo
-            div.contador
-    script.
-        let contador = document.querySelector('.contador')
-        let number1 = 5
-        function actualizarContador() {
-            if (number1 > 0) {
-                contadorElement.innerHTML = `<p>${number1}</p>`
-                number1--
-            } else {
-                clearInterval(intervalId);
-                window.location.href = 'https://www.flashnowenvios.com/tiendanube'
-            }
-        }
+                div.contador
+        script.
+            let contadorElement = document.querySelector('.contador');
+            let number1 = 5;
 
-        const intervalId = setInterval(actualizarContador, 1000)
+            function actualizarContador() {
+                if (number1 > 0) {
+                    contadorElement.innerHTML = `<p>${number1}</p>`;
+                    number1--;
+                } else {
+                    clearInterval(intervalId);
+                    window.location.href = 'https://www.flashnowenvios.com/tiendanube';
+                }
+            }
+
+            const intervalId = setInterval(actualizarContador, 1000);
+            actualizarContador(); // Llama a la función al inicio
