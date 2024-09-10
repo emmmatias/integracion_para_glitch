@@ -223,7 +223,7 @@ routes.get('/status_client', (req, res) => {
 routes.get("/descarga-db", (req, res) => {
     if(req.query.code == process.env.ADMIN){
         
-        fs_1.access(user_db, fs_1.constants.F_OK, (err) => {
+        fs_1.access(user_db, fs_1.default.constants.F_OK, (err) => {
             if (err) {
                 return res.status(404).send('Base de datos no encontrada');
             }
