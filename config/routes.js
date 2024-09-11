@@ -102,6 +102,8 @@ function enviarDatos(obj){
 routes.post('/user_load', (req, res) => {
     let usuario = req.body.usuario
     let contrasena = req.body.contrasena
+    console.log(` datos de ingreso a usuarios ${usuario}, ${contrasena}`)
+
     user_db.get('SELECT user_id, access_token, email, cp_tienda, contacto_tienda, direccion, whatsapp, saldo, metodo_pago FROM users WHERE usuario = ?  &  contrasena = ? ', [usuario, contrasena], (err, row) => {
         if(!err){
             let obj = {
@@ -134,6 +136,25 @@ routes.get("/user", (req, res) =>{
 routes.get("/", (req, res) =>{
     res.render(path_1.default.join(__dirname, '../vistas/usuario.pug'))
 })
+
+function modificar_saldo(costo, user_id){
+    user_db.get('SELECT saldo from users where user_id = ?', [user_id], (err, row) => {
+        if(!err && row){
+            console.log(`saldo previo en el row: ${row}`)
+            let saldo = row.saldo
+            let nuevo_saldo = Number(saldo) + Number(costo)
+            user_db.run('UPDATE users set saldo = ? where user_id = ?', [nuevo_saldo, user_id], (error) =>{
+                if(error){
+                    console.error(error)
+                }
+            })
+            console.log(` nuevo saldo ${nuevo_saldo}`)
+        }else if(err || !row){
+            console.error(err)
+        }
+    })    
+}
+
 routes.post("/registro", (req, res) => {
     console.log(req.body);
     let usuario = req.body.usuario || "na";
@@ -316,6 +337,7 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
                                 telefono_clinete : data.contact_phone,
                                 metodo_pago : store_data.metodo_pago
                             }
+                            modificar_saldo(envio_flash.precio_envio, store_data.user_id)
                             enviarDatos(envio_flash)
                             console.log(data)
                             //hacer el informe de status de envío
