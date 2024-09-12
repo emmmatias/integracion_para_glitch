@@ -63,44 +63,43 @@ html
                 h1= formTitle
                 form#miform(action=formaction, method='post')
                     div
-                        input#user_id(type="text", value=id, name='id', hidden)
+                        input#user_id(type="number", value=id, name='id', hidden)
                         label(for='usuario') Ingresá tu DNI (será tu usuario):
-                        br
                         input#usuario(type='text', name='usuario', value=usuario || '', placeholder= 'Tu usuario', required)
-                        br
+                        
                         label(for='contrasena') Creá una contraseña:
-                        br
+                        
                         input#contrasena(type='text', name='contrasena', value=contrasena || '', placeholder='contraseña', required)
-                        br
+                        
                         label(for='contacto_tienda') Nombre de la tienda:
-                        br
+                        
                         input#contacto_tienda(type='text', value=contacto_tienda || '', name='contacto_tienda', placeholder='Nombre de la tienda', required)
-                        br
+                        
                         label(for='direccion') Direccion de retiro:
-                        br
+                        
                         input#direccion(type='text', name='direccion', value=direccion || '', placeholder=direccion, required)
-                        br
+                        
                         label(for='email') Email:
-                        br
+                        
                         input#email(type='email', value=email || '', name='email', placeholder=email, required)
-                        br
+                        
                         label(for='cp_tienda') Código postal:
-                        br
+                        
                         input#cp_tienda(type='text', value=cp_tienda || '', name='cp_tienda', placeholder='Código Postal', required)
-                        br
+                        
                         label(for='whatsapp') WhatsApp:
-                        br
+                        
                         input#whatsapp(type='text', value=whatsapp || '',name='whatsapp', placeholder=whatsapp, required)
-                        br
+                        
                         label(for='telefono') Teléfono:
-                        br
+                        
                         input#telefono(type='text', value=whatsapp || '',name='telefono', placeholder=telefono, required)
-                        br
+                        
                         label(for='metodo_pago') Método de pago:
-                        br
+                        
                         input#metodo_pago(type='text', value=metodo_pago || '',name='metodo_pago', placeholder='Tu método de pago', required)
-                        br
-                        br
+                        
+                        
                         button(type='submit') Enviar
                 p Los datos serán utilizados para poder dar de alta su usuario en nuestro sistema, la dirección debe ser la de retiro de los paquetes. Como por ejemplo 'av santa fe 4465, piso, depto, localidad'
     script.
