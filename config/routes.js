@@ -127,7 +127,11 @@ routes.post('/user_load', (req, res) => {
     })
 })
 
-
+routes.post("/buscar", (req, res) => {
+    user_db.get('SELECT where')
+    
+    res.json(response)
+})
 
 routes.get("/user", (req, res) =>{
     res.render(path_1.default.join(__dirname, '../vistas/user.pug'))
@@ -244,7 +248,7 @@ routes.get('/status_client', (req, res) => {
 routes.get("/descarga-db", (req, res) => {
     if(req.query.code == process.env.ADMIN){
         
-        fs_1.access(user_db, fs_1.default.constants.F_OK, (err) => {
+        fs_1.default.access(user_db, fs_1.default.constants.F_OK, (err) => {
             if (err) {
                 return res.status(404).send('Base de datos no encontrada');
             }
