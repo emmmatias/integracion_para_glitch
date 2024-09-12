@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Registro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            background-image: linear-gradient(180deg, #FFFFFF 60%, #f2295b 100%)
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            margin-top: 10px;
+            display: block;
+            text-align: center;
+        }
+        input[type="text"],
+        input[type="email"] {
+            width: 70%;
+            display: block;
+            margin-left: 15%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 20%;
+            display: block;
+            text-align: center;
+            margin-left: 40%;
+            padding: 10px;
+            background-color: #f2295b;
+            margin-top:  3%;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            color: #000;
+            background-color: #f0285a;
+        }
+        p {
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="box">
+        <h1>Formulario de Registro</h1>
+        <form id="miform" action="formaction" method="post">
+            <div>
+                <input id="user_id" type="hidden" name="id" value="id">
+                <label for="usuario">Ingresá tu DNI (será tu usuario):</label>
+                <input id="usuario" type="text" name="usuario" value="" placeholder="Tu usuario" required>
+
+                <label for="contrasena">Creá una contraseña:</label>
+                <input id="contrasena" type="text" name="contrasena" value="" placeholder="contraseña" required>
+
+                <label for="contacto_tienda">Nombre de la tienda:</label>
+                <input id="contacto_tienda" type="text" name="contacto_tienda" value="" placeholder="Nombre de la tienda" required>
+
+                <label for="direccion">Dirección de retiro:</label>
+                <input id="direccion" type="text" name="direccion" value="" placeholder="Dirección" required>
+
+                <label for="email">Email:</label>
+                <input id="email" type="email" name="email" value="" placeholder="Email" required>
+
+                <label for="cp_tienda">Código postal:</label>
+                <input id="cp_tienda" type="text" name="cp_tienda" value="" placeholder="Código Postal" required>
+
+                <label for="whatsapp">WhatsApp:</label>
+                <input id="whatsapp" type="text" name="whatsapp" value="" placeholder="WhatsApp" required>
+
+                <label for="telefono">Teléfono:</label>
+                <input id="telefono" type="text" name="telefono" value="" placeholder="Teléfono" required>
+
+                <label for="metodo_pago">Método de pago:</label>
+                <input id="metodo_pago" type="text" name="metodo_pago" value="" placeholder="Tu método de pago" required>
+
+                <button type="submit">Enviar</button>
+            </div>
+        </form>
+        <p>Los datos serán utilizados para poder dar de alta su usuario en nuestro sistema, la dirección debe ser la de retiro de los paquetes. Como por ejemplo 'av santa fe 4465, piso, depto, localidad'</p>
+    </div>
+</div>
+
+</body>
+</html>
