@@ -187,6 +187,7 @@ routes.post('envios_hook', (req, res) => {
     res.statusCode = 200;
     res.end('proceso con exito');
 });
+/*
 routes.get('/modif', (req, res) => {
     let code = req.query.code
     if(code == process.env.ADMIN){
@@ -212,13 +213,15 @@ routes.get('/modif', (req, res) => {
       metodo_pago TEXT,
       seguimiento TEXT
       )`);
-        */});
+        });
         res.send('cambio realizado');
     }else{
         res.end('Código inválido')
     }
     
 });
+
+*/
 //webhooks obligatorios
 routes.post("/hook", (req, res) => {
     let hook_json = path_1.default.join(__dirname, "hook.json");
@@ -248,7 +251,7 @@ routes.get('/status_client', (req, res) => {
 routes.get("/descarga-db", (req, res) => {
     if(req.query.code == process.env.ADMIN){
         
-        fs_1.default.access(user_db, fs_1.default.constants.F_OK, (err) => {
+        fs_1.default.access(db_path, fs_1.default.constants.F_OK, (err) => {
             if (err) {
                 return res.status(404).send('Base de datos no encontrada');
             }
