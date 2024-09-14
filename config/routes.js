@@ -380,7 +380,11 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
         //res.sendFile(path_1.default.join(__dirname, '../../vistas/confirmacion.html'));
     });
 }));
+
 routes.post("/costos", (req, res) => {
+
+    console.log('NUEVO PEDIDO')
+    console.log(`el cp de origen es ${req.body.origin.postal_code} el de destino es ${req.body.destination.postal_code}`)
     let req_body = req.body;
     const tomorrow = new Date(new Date().getTime() + (24 * 60 * 60 * 1000));
     const pasado_mañana2 = new Date(new Date().getTime() + ((24 * 60 * 60 * 1000) * 3));
@@ -418,7 +422,7 @@ routes.post("/costos", (req, res) => {
     const compare = () => {
         return new Promise((resolve, reject) => {
             fs_1.default.createReadStream(path_1.default.join(__dirname, 'cps.csv')).pipe((0, csv_parser_1.default)()).on('data', row => {
-                if (Number(cp_origen) <= 1400 && Number(cp_origen) >= 1000 && foundOrigin == false) {
+                if (Number(cp_origen) <= 1499 && Number(cp_origen) >= 1000 && foundOrigin == false) {
                     zona_origen = 'CABA';
                     cordon_origen = 'CABA';
                     vol_total < volmaxmoto ? costo_origen = 3300 : costo_origen = 3650;
