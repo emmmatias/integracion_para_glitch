@@ -428,7 +428,7 @@ routes.post("/costos", (req, res) => {
                     vol_total < volmaxmoto ? costo_origen = 3300 : costo_origen = 3650;
                     foundOrigin = true;
                 }
-                if (Number(cp_destino) <= 1400 && Number(cp_destino) >= 1000 && foundDestination == false) {
+                if (Number(cp_destino) <= 1499 && Number(cp_destino) >= 1000 && foundDestination == false) {
                     zona_destino = 'CABA';
                     cordon_destino = 'CABA';
                     vol_total < volmaxmoto ? costo_destino = 3300 : costo_destino = 3650;
@@ -458,7 +458,7 @@ routes.post("/costos", (req, res) => {
                 }
             }).on('end', () => {
                 if (!foundOrigin || !foundDestination) {
-                    reject(new Error('Códigos postais no encontrados'));
+                    reject(new Error('Códigos postales no encontrados '));
                 }
             });
         });
