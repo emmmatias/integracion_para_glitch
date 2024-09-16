@@ -256,9 +256,9 @@ user_db.run('UPDATE pedidos set seguimiento = ? where observaciones = ?', [estad
         console.error(err)
     }
 })})
-routes.post('/seguimiento', (req, res) =>{
+/*routes.post('/seguimiento', async (req, res) =>{
 let numero = req.body.numero
-user_db.get('SELECT seguimiento where observaciones = ?',[numero], (err, row) =>{
+await user_db.get('SELECT seguimiento where observaciones = ?',[numero], (err, row) =>{
     if(!err){
         res.status(200).send({
             estado: row.seguimiento
@@ -268,7 +268,37 @@ user_db.get('SELECT seguimiento where observaciones = ?',[numero], (err, row) =>
             estado: 'Número no encontrado'
         })
     }
-})})
+})})*/
+routes.post('/seguimiento', async (req, res) => {
+    let numero = req.body.numero;
+
+    try {
+        const row = await new Promise((resolve, reject) => {
+            user_db.get('SELECT seguimiento FROM observaciones WHERE numero = ?', [numero], (err, row) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(row);
+                }
+            });
+        });
+
+        if (row) {
+            res.status(200).send({
+                estado: row.seguimiento
+            });
+        } else {
+            res.status(404).send({
+                estado: 'Número no encontrado'
+            });
+        }
+    } catch (error) {
+        res.status(500).send({
+            estado: 'Error en la consulta'
+        });
+    }
+});
+
 routes.get("/estado_envio", (req, res) =>{
     res.render(path_1.default.join(__dirname, '../vistas/estado_envio.pug'))
 })
