@@ -274,7 +274,7 @@ routes.post('/seguimiento', async (req, res) => {
 
     try {
         const row = await new Promise((resolve, reject) => {
-            user_db.get('SELECT seguimiento FROM observaciones WHERE numero = ?', [numero], (err, row) => {
+            user_db.get('SELECT seguimiento FROM pedidos WHERE observaciones = ?', [numero], (err, row) => {
                 if (err) {
                     reject(err);
                 } else {
