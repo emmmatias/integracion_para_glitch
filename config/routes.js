@@ -18,6 +18,7 @@ const path_1 = __importDefault(require("path"));
 const auth_1 = require("../features/auth");
 const product_1 = require("../features/product");
 const { time } = require("console");
+const { READONLY } = require("sqlite3");
 const dotenv_1 = __importDefault(require("dotenv"))
 const sqlite3_1 = __importDefault(require("sqlite3"));
 const csv_parser_1 = __importDefault(require("csv-parser"));
@@ -247,6 +248,30 @@ routes.post("/hook_stores", (req, res) => {
 routes.get('/status_client', (req, res) => {
     let estados = ["dispatched", "received_by_post_office", "in_transit", "out_for_delivery", "delivery_attempt_failed", "delayed", "ready_for_pickup", "delivered", "returned_to_sender", "lost", "failure"];
 });
+routes.get("/seguimiento", (req, res) => {
+let estado = req.query.estado
+let numero = req.query.numero
+user_db.run('UPDATE pedidos set seguimiento = ? where observaciones = ?', [estado, numero], (err) =>{
+    if(err){
+        console.error(err)
+    }
+})})
+routes.post('/seguimiento', (req, res) =>{
+let numero = req.body.numero
+user_db.get('SELECT seguimiento where observaciones = ?',[numero], (err, row) =>{
+    if(!err){
+        res.status(200).send({
+            estado: row.seguimiento
+        })
+    }else{
+        res.status(404).send({
+            estado: 'Número no encontrado'
+        })
+    }
+})})
+routes.get("/estado_envio", (req, res) =>{
+    res.render(path_1.default.join(__dirname, '../vistas/estado_envio.pug'))
+})
 //ruta para usuarios dentro de tienda nube
 routes.get("/descarga-db", (req, res) => {
     if(req.query.code == process.env.ADMIN){
@@ -322,7 +347,7 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
                             data.contact_name,
                             `${data.shipping_address.address} ${data.shipping_address.number}, ${data.shipping_address.floor} ${data.shipping_address.locality}`,
                             data.contact_phone,
-                            data.customer.note,
+                            e,
                             store_data.metodo_pago
                         ], (error) => __awaiter(void 0, void 0, void 0, function* () {
                             if (error) {
