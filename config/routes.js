@@ -436,7 +436,22 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
     });
 }));
 
-routes.post("/costos", (req, res) => {
+function buscar_origen(id) {
+    return new Promise((resolve, reject) => {
+        user_db.get('SELECT cp_tienda FROM users WHERE user_id = ?', [id], (err, row) => {
+            if (err) {
+                console.error(err);
+                return reject(err);
+            }
+            if (!row || row.cp_tienda == 'na' || row.cp_tienda == 'no definido') {
+                return resolve(null); // Devuelve null si no hay datos
+            }
+            resolve(Number(row.cp_tienda)); // Devuelve el código postal
+        });
+    });
+}
+
+routes.post("/costos",  async (req, res) => {
 
     console.log('NUEVO PEDIDO')
     console.log(`el cp de origen es ${req.body.origin.postal_code} el de destino es ${req.body.destination.postal_code}`)
@@ -461,7 +476,7 @@ routes.post("/costos", (req, res) => {
     let zona_destino;
     let zona_origen;
     let costo_destino = 0;
-    let cp_origen = req.body.origin.postal_code;
+    let cp_origen = await buscar_origen(req.body.store_id) || req.body.origin.postal_code;
     let cp_destino = req.body.destination.postal_code;
     let items = req.body.items;
     let aux = 0;
