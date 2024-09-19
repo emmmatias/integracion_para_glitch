@@ -91,7 +91,7 @@ routes.get("/admin", (req, res) =>{
 })
 
 function enviarDatos(obj){
- fetch('https://script.google.com/macros/s/AKfycbzVLGJSFWWv9rnieMrxtyfG1uiXpAB0itZRWcaMdeTkN_FjkZwaP_Xs7qnTpqrM9k94/exec',{
+ fetch('https://script.google.com/macros/s/AKfycbx9r3nkpUlOpUEXJFTrtvPg12dsJZgbt5A_-xE3gb--CoVdJnDlfXH9ZT7sQ1oLwRbW/exec',{
     method: 'POST',
     headers:{
         'Content-Type': 'application/json'
@@ -451,6 +451,8 @@ function buscar_origen(id) {
     });
 }
 
+
+
 routes.post("/costos",  async (req, res) => {
 
     console.log('NUEVO PEDIDO')
@@ -476,7 +478,7 @@ routes.post("/costos",  async (req, res) => {
     let zona_destino;
     let zona_origen;
     let costo_destino = 0;
-    let cp_origen = await buscar_origen(req.body.store_id) || req.body.origin.postal_code;
+    let cp_origen = await buscar_origen(req.body.store_id)
     let cp_destino = req.body.destination.postal_code;
     let items = req.body.items;
     let aux = 0;
