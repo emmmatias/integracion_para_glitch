@@ -91,7 +91,7 @@ routes.get("/admin", (req, res) =>{
 })
 
 function enviarDatos(obj){
- fetch('https://script.google.com/macros/s/AKfycbx9r3nkpUlOpUEXJFTrtvPg12dsJZgbt5A_-xE3gb--CoVdJnDlfXH9ZT7sQ1oLwRbW/exec',{
+ fetch('https://script.google.com/macros/s/AKfycby7bhmPEFGkr-6gL6d1s1Bd6f92mKnLmnBdxoQWoFbgt-E07UtQJoA9QMR6PwiQpntN/exec',{
     method: 'POST',
     headers:{
         'Content-Type': 'application/json'
@@ -329,7 +329,7 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
     let store_data;
     const getStoreData = () => {
         return new Promise((resolve, reject) => {
-            user_db.get('SELECT user_id, access_token, contacto_tienda, direccion, whatsapp, saldo, metodo_pago FROM users WHERE user_id = ?', [req.query.store], (err, row) => {
+            user_db.get('SELECT user_id, access_token, email, contacto_tienda, direccion, whatsapp, saldo, metodo_pago FROM users WHERE user_id = ?', [req.query.store], (err, row) => {
                 if (err) {
                     reject(err);
                 }
@@ -338,6 +338,7 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
                         store_data = {
                             user_id: row.user_id,
                             access_token: row.access_token,
+                            email: row.email,
                             contacto_tienda: row.contacto_tienda,
                             direccion: row.direccion,
                             whatsapp: row.whatsapp,
@@ -387,6 +388,7 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
                             //hacer la cargua a flash
                             let envio_flash = {
                                 id_envio : e,
+                                mail: store_data.email,
                                 fecha_retiro : new Date(mañana).toLocaleDateString(),
                                 id_tienda : store_data.user_id,
                                 contacto_tienda : store_data.contacto_tienda,
@@ -405,7 +407,7 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
                             //hacer el informe de status de envío
                             let body1 = {
                                 shipping_tracking_number: `${data.id}`,
-                                shipping_tracking_url: "https://app-tienda-nube.onrender.com/seguimiento",
+                                shipping_tracking_url: "https://app-tienda-nube.onrender.com/estado_envio",
                                 notify_customer: true
                             };
                             let body2 = JSON.stringify(body1);
