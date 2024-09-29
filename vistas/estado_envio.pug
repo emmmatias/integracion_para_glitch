@@ -78,7 +78,7 @@ html(lang="en")
             .then(response => response.json())
             .then(res => {
                 let estado = res.estado;
-                let html = `<h3>El envío tiene el estado: ${estado}</h3>`;
+                let html = `<h3>El envío tiene el estado: ${estado.replace(/_/g , ' ')}</h3>`;
                 document.querySelector('#result').innerHTML = html;
             })
             .catch(error => {
