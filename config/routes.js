@@ -453,7 +453,9 @@ function buscar_origen(id) {
     });
 }
 
+routes.get("/n_sistema_login", (req, res) => {
 
+})
 
 routes.post("/costos",  async (req, res) => {
 
@@ -499,7 +501,7 @@ routes.post("/costos",  async (req, res) => {
                 if (Number(cp_origen) <= 1499 && Number(cp_origen) >= 1000 && foundOrigin == false) {
                     zona_origen = 'CABA';
                     cordon_origen = 'CABA';
-                    vol_total < volmaxmoto ? costo_origen = 3300 : costo_origen = 3650;
+                    vol_total < volmaxmoto ? costo_origen = 3700 : costo_origen = 4100;
                     foundOrigin = true;
                 }
                 if (Number(cp_destino) <= 1499 && Number(cp_destino) >= 1000 && foundDestination == false) {
