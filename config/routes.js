@@ -507,7 +507,7 @@ routes.post("/costos",  async (req, res) => {
                 if (Number(cp_destino) <= 1499 && Number(cp_destino) >= 1000 && foundDestination == false) {
                     zona_destino = 'CABA';
                     cordon_destino = 'CABA';
-                    vol_total < volmaxmoto ? costo_destino = 3300 : costo_destino = 3650;
+                    vol_total < volmaxmoto ? costo_destino = 3700 : costo_destino = 4100;
                     foundDestination = true;
                 }
                 if (cp_origen == row.cp && foundOrigin == false) {
