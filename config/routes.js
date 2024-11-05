@@ -323,8 +323,9 @@ routes.get("/descarga-db", (req, res) => {
     }
 });
 routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.query);
+    console.log('++++++++++++++++++++++++++++++++++++++++LOS QUERYS SON:', req.query);
     let ids = req.query.id;
+    console.log('LOS IDS SON::::::::::::::::', ids)
     console.log(typeof (ids));
     let store_data;
     const getStoreData = () => {
