@@ -360,6 +360,8 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
         return new Promise((resolve, reject) => {
             getStoreData().then(() => __awaiter(void 0, void 0, void 0, function* () {
                 ids.forEach((e) => __awaiter(void 0, void 0, void 0, function* () {
+                    console.log('HACIENDO PETICION DE DATOS DE TIENDA A TIENDA NUVE')
+                    console.log( 'A LA URL :', `https://api.tiendanube.com/v1/${req.query.store}/orders/${e}`)
                     fetch(`https://api.tiendanube.com/v1/${req.query.store}/orders/${e}`, {
                         headers: {
                             'Content-Type': 'application/json',
@@ -368,6 +370,7 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
                         }
                     }).then(response => response.json()).then((data) => {
                         console.log('------------------------------------------ NUEVO PEDIDO ENVIANDOSE A RESERVAS -----------------------------------------')
+                        console.log('++++++++++++++++++++++++++++ data del nuevo pedido', data)
                         user_db.run('INSERT INTO pedidos (fecha_retiro, id_tienda, contacto_tienda, direccion_tienda, telefono_tienda, fecha_entrega, precio_envio, nombre_cliente, direccion_cliente, telefono_cliente, observaciones, metodo_pago) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', [
                             new Date(mañana).toLocaleDateString(),
                             store_data.user_id,
