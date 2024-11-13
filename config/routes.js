@@ -377,6 +377,20 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
                     }).then(response => response.json()).then((data) => {
                         console.log('------------------------------------------ NUEVO PEDIDO ENVIANDOSE A RESERVAS -----------------------------------------')
                         console.log('++++++++++++++++++++++++++++ data del nuevo pedido', data)
+                        user_db.run(`CREATE TABLE PEDIDOS (
+                            fecha_retiro DATE,
+                            id_tienda TEXT,
+                            contacto_tienda TEXT,
+                            direccion_tienda TEXT,
+                            telefono_tienda TEXT,
+                            fecha_entrega DATE,
+                            precio_envio TEXT,
+                            nombre_cliente TEXT,
+                            direccion_cliente TEXT,
+                            telefono_cliente TEXT,
+                            observaciones TEXT,
+                            metodo_pago TEXT
+                            )`)
                         user_db.run('INSERT INTO pedidos (fecha_retiro, id_tienda, contacto_tienda, direccion_tienda, telefono_tienda, fecha_entrega, precio_envio, nombre_cliente, direccion_cliente, telefono_cliente, observaciones, metodo_pago) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', [
                             new Date(mañana).toLocaleDateString(),
                             store_data.user_id,
@@ -412,6 +426,7 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
                                 metodo_pago : store_data.metodo_pago
                             }
                             modificar_saldo(envio_flash.precio_envio, store_data.user_id)
+
                             enviarDatos(envio_flash)
                             
                             console.log(data)
