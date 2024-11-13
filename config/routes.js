@@ -473,7 +473,7 @@ routes.post("/costos",  async (req, res) => {
     console.log('NUEVO PEDIDO')
     console.log(`el cp de origen es ${req.body.origin.postal_code} el de destino es ${req.body.destination.postal_code}`)
     let req_body = req.body;
-    const tomorrow = new Date(new Date().getTime() + (24 * 60 * 60 * 1000));
+    const tomorrow = new Date(new Date().getTime());
     const pasado_mañana2 = new Date(new Date().getTime() + ((24 * 60 * 60 * 1000) * 5));
     function fecha(t) {
         const year = t.getFullYear();
