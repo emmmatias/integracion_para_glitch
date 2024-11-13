@@ -104,6 +104,22 @@ function enviarDatos(obj){
         console.error('ERROR AL ENVIAR LOS DATOS AL FORMU DE FLASH')
     }
 }
+function enviarDatos2(obj){
+    function enviarDatos(obj){
+        try{
+            fetch('https://script.google.com/macros/s/AKfycbxFPMo6VZiy3Sdy3HaTT3TDVodTSWOkfylFFTRXMkmLyknn1nYcjOKU2NUyWQtc4QxF/exec',{
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(obj)
+             })
+             console.log('DATOS ENVIADOS A FLASH: ', obj)
+        }catch(error){
+            console.error('ERROR AL ENVIAR LOS DATOS AL FORMU DE FLASH')
+        }
+    }
+}
 
 routes.post('/user_load', (req, res) => {
     let usuario = req.body.usuario
@@ -429,7 +445,7 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
 
 
                             enviarDatos(envio_flash)
-                            
+                            enviarDatos2(envio_flash)
                             
                             console.log(data)
                             //hacer el informe de status de envío
