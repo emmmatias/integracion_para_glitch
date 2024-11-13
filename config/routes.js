@@ -105,9 +105,9 @@ function enviarDatos(obj){
     }
 }
 function enviarDatos2(obj){
-    function enviarDatos(obj){
+    
         try{
-            fetch('https://script.google.com/macros/s/AKfycbxFPMo6VZiy3Sdy3HaTT3TDVodTSWOkfylFFTRXMkmLyknn1nYcjOKU2NUyWQtc4QxF/exec',{
+            fetch('https://script.google.com/macros/s/AKfycbxCYkaIvvsEzqumJhRMhJEVDsZXcZMJoWRBEamkkSu-BzwnmTUrcg6kf68YXPVRrdpB/exec',{
                 method: 'POST',
                 headers:{
                     'Content-Type': 'application/json'
@@ -118,7 +118,7 @@ function enviarDatos2(obj){
         }catch(error){
             console.error('ERROR AL ENVIAR LOS DATOS AL FORMU DE FLASH')
         }
-    }
+    
 }
 
 routes.post('/user_load', (req, res) => {
