@@ -377,7 +377,7 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
                     }).then(response => response.json()).then((data) => {
                         console.log('------------------------------------------ NUEVO PEDIDO ENVIANDOSE A RESERVAS -----------------------------------------')
                         console.log('++++++++++++++++++++++++++++ data del nuevo pedido', data)
-                        user_db.run(`CREATE TABLE PEDIDOS (
+                        user_db.run(`CREATE TABLE pedidos (
                             fecha_retiro DATE,
                             id_tienda TEXT,
                             contacto_tienda TEXT,
