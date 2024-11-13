@@ -27,7 +27,7 @@ const carrier = {
 };
 const carrier_opt = {
     "code": "express",
-    "name": "Servicio de envío Estándar 48hs",
+    "name": "Servicio de envío Estándar 72hs",
     "allow_free_shipping": true
 };
 let data_tienda;

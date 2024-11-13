@@ -91,13 +91,18 @@ routes.get("/admin", (req, res) =>{
 })
 
 function enviarDatos(obj){
- fetch('https://script.google.com/macros/s/AKfycbwY0Y-9Jn3cjQJF88ET3vJkczRFWRUtV3l1RPL7x3XxUGLPxJ687elhMsOMXC9xb3z5/exec',{
-    method: 'POST',
-    headers:{
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(obj)
- })
+    try{
+        fetch('https://script.google.com/macros/s/AKfycbx3jh5rzxJYREv5HOGhPjh8oncpQQxUY-lGGpiVF3pRDwbxZvgRbON0f7U9SNW_FT92/exec',{
+            method: 'POST',
+            headers:{
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(obj)
+         })
+         console.log('DATOS ENVIADOS A FLASH: ', obj)
+    }catch(error){
+        console.error('ERROR AL ENVIAR LOS DATOS AL FORMU DE FLASH')
+    }
 }
 
 routes.post('/user_load', (req, res) => {
@@ -408,6 +413,7 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
                             }
                             modificar_saldo(envio_flash.precio_envio, store_data.user_id)
                             enviarDatos(envio_flash)
+                            
                             console.log(data)
                             //hacer el informe de status de envío
                             let body1 = {
@@ -468,7 +474,7 @@ routes.post("/costos",  async (req, res) => {
     console.log(`el cp de origen es ${req.body.origin.postal_code} el de destino es ${req.body.destination.postal_code}`)
     let req_body = req.body;
     const tomorrow = new Date(new Date().getTime() + (24 * 60 * 60 * 1000));
-    const pasado_mañana2 = new Date(new Date().getTime() + ((24 * 60 * 60 * 1000) * 3));
+    const pasado_mañana2 = new Date(new Date().getTime() + ((24 * 60 * 60 * 1000) * 5));
     function fecha(t) {
         const year = t.getFullYear();
         const month = String(t.getMonth() + 1).padStart(2, '0');
