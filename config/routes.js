@@ -377,7 +377,7 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
                     }).then(response => response.json()).then((data) => {
                         console.log('------------------------------------------ NUEVO PEDIDO ENVIANDOSE A RESERVAS -----------------------------------------')
                         console.log('++++++++++++++++++++++++++++ data del nuevo pedido', data)
-                        user_db.run(`CREATE TABLE pedidos (
+                        user_db.run(`CREATE TABLE pedidos IF NOT EXISTS (
                             fecha_retiro DATE,
                             id_tienda TEXT,
                             contacto_tienda TEXT,
@@ -427,7 +427,9 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
                             }
                             modificar_saldo(envio_flash.precio_envio, store_data.user_id)
 
-                            enviarDatos(envio_flash)
+
+                            setTimeout(enviarDatos(envio_flash), 1000)
+                            
                             
                             console.log(data)
                             //hacer el informe de status de envío
