@@ -428,7 +428,7 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
                             modificar_saldo(envio_flash.precio_envio, store_data.user_id)
 
 
-                            setTimeout(enviarDatos(envio_flash), 1000)
+                            enviarDatos(envio_flash)
                             
                             
                             console.log(data)
