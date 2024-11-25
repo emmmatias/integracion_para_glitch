@@ -92,7 +92,7 @@ routes.get("/admin", (req, res) =>{
 
 function enviarDatos(obj){
     try{
-        fetch('https://script.google.com/macros/s/AKfycbx3jh5rzxJYREv5HOGhPjh8oncpQQxUY-lGGpiVF3pRDwbxZvgRbON0f7U9SNW_FT92/exec',{
+        fetch('https://script.google.com/macros/s/AKfycby1JoG8siLtwQtqOdd5HMDoyTH-EGkbRRoTllxfNBHQzwCwIVERMWKRSl98I5l0majj/exec',{
             method: 'POST',
             headers:{
                 'Content-Type': 'application/json'
@@ -104,6 +104,7 @@ function enviarDatos(obj){
         console.error('ERROR AL ENVIAR LOS DATOS AL FORMU DE FLASH')
     }
 }
+
 function enviarDatos2(obj){
     
         try{
