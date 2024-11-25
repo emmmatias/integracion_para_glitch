@@ -90,19 +90,27 @@ routes.get("/admin", (req, res) =>{
     })
 })
 
-function enviarDatos(obj){
-    try{
-        fetch('https://script.google.com/macros/s/AKfycbxarXAD9KuOzmpfoINwkA3BzZvWDs17rUBcm1LU3JY3fp58zLcdEPbTBv31FVFhHepD/exec',{
-            method: 'POST',
-            headers:{
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(obj)
-         })
-         console.log('DATOS ENVIADOS A FLASH: ', obj)
-    }catch(error){
-        console.error('ERROR AL ENVIAR LOS DATOS AL FORMU DE FLASH')
-    }
+function enviarDatos(obj) {
+    fetch('https://script.google.com/macros/s/AKfycbxarXAD9KuOzmpfoINwkA3BzZvWDs17rUBcm1LU3JY3fp58zLcdEPbTBv31FVFhHepD/exec', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(obj)
+    })
+    .then(response => {
+        // Verifica si la respuesta es exitosa
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+        return response.json(); // O el formato que necesites
+    })
+    .then(data => {
+        console.log('Respuesta recibida:', data);
+    })
+    .catch(error => {
+        console.error('Error al enviar datos:', error);
+    });
 }
 
 routes.post('/user_load', (req, res) => {
