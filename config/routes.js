@@ -91,6 +91,7 @@ routes.get("/admin", (req, res) =>{
 })
 
 function enviarDatos(obj) {
+    console.log('OBJETO A ENVIAR ', ojb)
     fetch('https://script.google.com/macros/s/AKfycbxarXAD9KuOzmpfoINwkA3BzZvWDs17rUBcm1LU3JY3fp58zLcdEPbTBv31FVFhHepD/exec', {
         method: 'POST',
         headers: {
