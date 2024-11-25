@@ -92,7 +92,7 @@ routes.get("/admin", (req, res) =>{
 
 function enviarDatos(obj){
     try{
-        fetch('https://script.google.com/macros/s/AKfycby1JoG8siLtwQtqOdd5HMDoyTH-EGkbRRoTllxfNBHQzwCwIVERMWKRSl98I5l0majj/exec',{
+        fetch('https://script.google.com/macros/s/AKfycbxarXAD9KuOzmpfoINwkA3BzZvWDs17rUBcm1LU3JY3fp58zLcdEPbTBv31FVFhHepD/exec',{
             method: 'POST',
             headers:{
                 'Content-Type': 'application/json'
@@ -103,23 +103,6 @@ function enviarDatos(obj){
     }catch(error){
         console.error('ERROR AL ENVIAR LOS DATOS AL FORMU DE FLASH')
     }
-}
-
-function enviarDatos2(obj){
-    
-        try{
-            fetch('https://script.google.com/macros/s/AKfycbxCYkaIvvsEzqumJhRMhJEVDsZXcZMJoWRBEamkkSu-BzwnmTUrcg6kf68YXPVRrdpB/exec',{
-                method: 'POST',
-                headers:{
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(obj)
-             })
-             console.log('DATOS ENVIADOS A FLASH: ', obj)
-        }catch(error){
-            console.error('ERROR AL ENVIAR LOS DATOS AL FORMU DE FLASH')
-        }
-    
 }
 
 routes.post('/user_load', (req, res) => {
@@ -446,7 +429,6 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
 
 
                             enviarDatos(envio_flash)
-                            enviarDatos2(envio_flash)
                             
                             console.log(data)
                             //hacer el informe de status de envío
@@ -579,7 +561,7 @@ routes.post("/costos",  async (req, res) => {
                 }
             }).on('end', () => {
                 if (!foundOrigin || !foundDestination) {
-                    reject(new Error('Códigos postales no encontrados '));
+                    reject(new Error('Códigos postales no encontrados'));
                 }
             });
         });
@@ -604,7 +586,7 @@ routes.post("/costos",  async (req, res) => {
         console.log(obj);
         res.json(obj);
     }).catch((error) => {
-        console.error(error);
+        console.log(error);
         res.statusMessage = 'No hay CPA encontrado';
         res.sendStatus(404);
     });
