@@ -1,0 +1,88 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title Consulta el estado de tu envío
+        style.
+            body {
+                align-content: center;
+                font-family: Arial, sans-serif;
+                margin: 0;
+                height: 100vh;
+                padding: 20px;
+                background-color: #f4f4f4;
+                background-image: linear-gradient(180deg, #FFFFFF 60%, #f2295b 100%);
+            }
+            .container {
+                
+                max-width: 600px;
+                margin: auto;
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+            h1 {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            input[type="text"] {
+                width: 70%;
+                display: block;
+                margin-left: 15%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+            button {
+                width: 20%;
+                display: block;
+                text-align: center;
+                margin-left: 40%;
+                padding: 10px;
+                background-color: #f2295b;
+                margin-top: 3%;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+            button:hover {
+                color: #000;
+                background-color: #f0285a;
+            }
+            #result {
+                margin-top: 20px;
+                text-align: center;
+            }
+    body
+        .container
+            h1 Consulta el estado de tu envío
+            form#my_form(action="/seguimiento", method="post")
+                input#numero(type="text", name="numero", placeholder="Número de seguimiento", required)
+                button(type="submit") Buscar
+            div#result
+    script.
+        let form = document.querySelector('#my_form');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const numero = document.querySelector('#numero').value;
+            fetch('/seguimiento', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ numero })
+            })
+            .then(response => response.json())
+            .then(res => {
+                let estado = res.estado;
+                let html = `<h3>El envío tiene el estado: ${estado.replace(/_/g , ' ')}</h3>`;
+                document.querySelector('#result').innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.querySelector('#result').innerHTML = '<h3>Error al consultar el estado.</h3>';
+            });
+        });

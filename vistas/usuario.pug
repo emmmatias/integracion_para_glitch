@@ -1,0 +1,53 @@
+html(lang="es")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title Bienvenido
+        style.
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+            html, body {
+                height: 100%;
+            }
+            .container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+                background-color: #f0f0f0; 
+            }
+            .box {
+                font-family: Arial, Helvetica, sans-serif;
+                width: 90%; 
+                max-width: 400px; 
+                padding: 20px;
+                background-color: #ffffff; 
+                color: black;
+                text-align: center;
+                border-radius: 8px; 
+            }
+    body
+        div.container
+            div.box
+                h1 ¡¡Te damos la bienvenida a Flash Now!!
+                h3 La logística que es parte de tu equipo
+                div.contador
+        script.
+            let contadorElement = document.querySelector('.contador');
+            let number1 = 5;
+
+            function actualizarContador() {
+                if (number1 > 0) {
+                    contadorElement.innerHTML = `<p>${number1}</p>`;
+                    number1--;
+                } else {
+                    clearInterval(intervalId);
+                    window.location.href = 'https://www.flashnowenvios.com/app-tienda-nube';
+                }
+            }
+
+            const intervalId = setInterval(actualizarContador, 1000);
+            actualizarContador(); 

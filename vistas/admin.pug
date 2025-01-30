@@ -1,0 +1,39 @@
+html
+    head
+        title= title
+    body
+        h1 Adminitracion de cuentas
+        form#miform(action="/data_envio", method="post") 
+            input#usuario(type="text", value=usuario, hidden)
+            input#contrasena(type="text", value=contrasena, hidden)
+            label(for="id_envio") 
+            input#id_envio(type="text", placeholder="Id de pedido", required)
+            button(type='submit') Buscar
+        script.
+            let loader = `<div class="loader"></div>`
+            let form = document.querySelector('#miform')
+
+            form.addEventListener('submit', (event) =>{
+                event.preventDefault()
+                let id_envio = document.querySelector('#id_envio').value
+                let contrasena = document.querySelector('#contrasena').value
+                let usuario = document.querySelector('#usuario').value
+                let body = {
+                    contrasena,
+                    usuario,
+                    id_envio
+                }
+                fetch('/data_envio', {
+                    method: 'POST',
+                    body: JSON.stringify(body),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then((dt) => dt.json()).then((response) =>{
+                    let respuesta = response
+                    
+                })
+            })
+
+            
+
