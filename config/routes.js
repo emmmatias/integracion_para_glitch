@@ -90,9 +90,9 @@ routes.get("/admin", (req, res) =>{
     })
 })
 
-async function enviarDatos(obj) {
+function enviarDatos(obj) {
     console.log('OBJETO A ENVIAR ', obj)
-    await fetch('https://script.google.com/macros/s/AKfycbxarXAD9KuOzmpfoINwkA3BzZvWDs17rUBcm1LU3JY3fp58zLcdEPbTBv31FVFhHepD/exec', {
+    fetch('https://script.google.com/macros/s/AKfycbx7nfw_CXKmGgAHuBsvA8bx6pstmkoFdAoK28ZlpS8TQ5zgcNnztrUC87_-P-N2i-IK/exec', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -421,7 +421,7 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
                             data.contact_phone,
                             e,
                             store_data.metodo_pago
-                        ], (error) => __awaiter(void 0, void 0, void 0, async function* () {
+                        ], (error) => __awaiter(void 0, void 0, void 0, function* () {
                             if (error) {
                                 console.error(error);
                             }
@@ -446,7 +446,7 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
 
                             modificar_saldo(envio_flash.precio_envio, store_data.user_id)
                             
-                            await enviarDatos(envio_flash)
+                            enviarDatos(envio_flash)
                             
                             console.log(data)
                             //hacer el informe de status de envío
