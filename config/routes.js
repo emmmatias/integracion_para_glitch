@@ -90,9 +90,9 @@ routes.get("/admin", (req, res) =>{
     })
 })
 
-function enviarDatos(obj) {
+async function enviarDatos(obj) {
     console.log('OBJETO A ENVIAR ', obj)
-    fetch('https://script.google.com/macros/s/AKfycbxarXAD9KuOzmpfoINwkA3BzZvWDs17rUBcm1LU3JY3fp58zLcdEPbTBv31FVFhHepD/exec', {
+    await fetch('https://script.google.com/macros/s/AKfycbxarXAD9KuOzmpfoINwkA3BzZvWDs17rUBcm1LU3JY3fp58zLcdEPbTBv31FVFhHepD/exec', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -100,17 +100,19 @@ function enviarDatos(obj) {
         body: JSON.stringify(obj)
     })
     .then(response => {
-        // Verifica si la respuesta es exitosa
         if (!response.ok) {
-            throw new Error(`Error: ${response.status} ${response.statusText}`);
+            console.log(`----------------------------------Error: ${response.status} ${response.statusText}`);
         }
-        return response.json(); // O el formato que necesites
+        if(response.ok){
+            return response.json(); 
+        }
+        
     })
     .then(data => {
-        console.log('Respuesta recibida:', data);
+        console.log('---------------------------------------Respuesta recibida:', data);
     })
     .catch(error => {
-        console.error('Error al enviar datos:', error);
+        console.error('--------------------------------------Error al enviar datos:', error);
     });
 }
 
@@ -336,12 +338,14 @@ routes.get("/descarga-db", (req, res) => {
 
     }
 });
+
 routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('++++++++++++++++++++++++++++++++++++++++LOS QUERYS SON:', req.query);
     let ids = req.query.id;
     console.log('LOS IDS SON::::::::::::::::', ids)
     console.log(typeof (ids));
     let store_data;
+    //obtenemos la data de la tienda
     const getStoreData = () => {
         return new Promise((resolve, reject) => {
             user_db.get('SELECT user_id, access_token, email, contacto_tienda, direccion, whatsapp, saldo, metodo_pago FROM users WHERE user_id = ?', [req.query.store], (err, row) => {
@@ -371,8 +375,11 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
             });
         });
     };
+
+    //busca los datos de cada uno de los pedidos
     let pro = () => {
         return new Promise((resolve, reject) => {
+            const ids_enviados = []
             getStoreData().then(() => __awaiter(void 0, void 0, void 0, function* () {
                 ids.forEach((e) => __awaiter(void 0, void 0, void 0, function* () {
                     console.log('HACIENDO PETICION DE DATOS DE TIENDA A TIENDA NUVE')
@@ -385,7 +392,8 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
                         }
                     }).then(response => response.json()).then((data) => {
                         console.log('------------------------------------------ NUEVO PEDIDO ENVIANDOSE A RESERVAS -----------------------------------------')
-                        console.log('++++++++++++++++++++++++++++ data del nuevo pedido', data)
+                        //console.log('++++++++++++++++++++++++++++ data del nuevo pedido', data)
+                        ids_enviados.push(e)
                         user_db.run(`CREATE TABLE IF NOT EXISTS pedidos (
                             fecha_retiro DATE,
                             id_tienda TEXT,
@@ -413,31 +421,32 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
                             data.contact_phone,
                             e,
                             store_data.metodo_pago
-                        ], (error) => __awaiter(void 0, void 0, void 0, function* () {
+                        ], (error) => __awaiter(void 0, void 0, void 0, async function* () {
                             if (error) {
                                 console.error(error);
                             }
                             
                             //hacer la cargua a flash
                             let envio_flash = {
-                                id_envio : e,
+                                id_envio: e,
                                 mail: store_data.email,
-                                fecha_retiro : new Date(mañana).toLocaleDateString(),
-                                id_tienda : store_data.user_id,
-                                contacto_tienda : store_data.contacto_tienda,
-                                direccion_tienda : store_data.direccion,
-                                telefono_tienda : store_data.whatsapp,
-                                fecha_entrega : new Date(pasado_mañana).toLocaleDateString(),
-                                precio_envio : data.shipping_cost_owner,
-                                nombre_cliente : data.contact_name,
-                                direccion_cliente : `${data.shipping_address.address} ${data.shipping_address.number}, ${data.shipping_address.floor} ${data.shipping_address.city}`,
-                                telefono_clinete : data.contact_phone,
-                                metodo_pago : store_data.metodo_pago
+                                fecha_retiro: new Date(mañana).toLocaleDateString(),
+                                id_tienda: store_data.user_id,
+                                contacto_tienda: store_data.contacto_tienda,
+                                direccion_tienda: store_data.direccion,
+                                telefono_tienda: store_data.whatsapp,
+                                fecha_entrega: new Date(pasado_mañana).toLocaleDateString(),
+                                precio_envio: data.shipping_cost_owner,
+                                nombre_cliente: data.contact_name,
+                                direccion_cliente: `${data.shipping_address.address} ${data.shipping_address.number}, ${data.shipping_address.floor} ${data.shipping_address.city}`,
+                                telefono_clinete: data.contact_phone,
+                                metodo_pago: store_data.metodo_pago,
+                                mail_cliente: data.contact_email
                             }
+
                             modificar_saldo(envio_flash.precio_envio, store_data.user_id)
-
-
-                            enviarDatos(envio_flash)
+                            
+                            await enviarDatos(envio_flash)
                             
                             console.log(data)
                             //hacer el informe de status de envío
@@ -460,6 +469,7 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
                         }));
                     });
                 }));
+                console.log('-----------------------------------ids_enviados', ids_enviados)
                 resolve();
             }));
         });
@@ -488,10 +498,6 @@ function buscar_origen(id) {
         });
     });
 }
-
-routes.get("/n_sistema_login", (req, res) => {
-
-})
 
 routes.post("/costos",  async (req, res) => {
 
