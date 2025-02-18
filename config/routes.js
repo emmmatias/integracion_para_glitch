@@ -89,7 +89,7 @@ routes.get("/admin", (req, res) =>{
         }
     })
 })
-
+/*
 function enviarDatos(obj) {
     console.log('OBJETO A ENVIAR ', obj)
     fetch('https://script.google.com/macros/s/AKfycbwxCvw9vx7jWaRjHfQh7UaRlVz4FWCM4ttf8mdsl1oxD0rzx8LMpG04cUHm75BTzs_u/exec', {
@@ -113,6 +113,35 @@ function enviarDatos(obj) {
     })
     .catch(error => {
         console.error('--------------------------------------Error al enviar datos:', error);
+    });
+}*/
+
+function enviarDatos(obj) {
+    console.log('OBJETO A ENVIAR ', obj);
+    return new Promise((resolve, reject) => {
+        fetch('https://script.google.com/macros/s/AKfycbwxCvw9vx7jWaRjHfQh7UaRlVz4FWCM4ttf8mdsl1oxD0rzx8LMpG04cUHm75BTzs_u/exec', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(obj)
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.log(`----------------------------------Error: ${response.status} ${response.statusText}`);
+                reject(new Error(`Error: ${response.status} ${response.statusText}`));
+            } else {
+                return response.json();
+            }
+        })
+        .then(data => {
+            console.log('---------------------------------------Respuesta recibida:', data);
+            resolve(data);
+        })
+        .catch(error => {
+            console.error('--------------------------------------Error al enviar datos:', error);
+            reject(error);
+        });
     });
 }
 
@@ -377,6 +406,7 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
     };
 
     //busca los datos de cada uno de los pedidos
+    /*
     let pro = () => {
         return new Promise((resolve, reject) => {
             const ids_enviados = []
@@ -473,7 +503,82 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
                 resolve();
             }));
         });
+    };*/
+
+    let pro = () => {
+        return new Promise((resolve, reject) => {
+            const ids_enviados = [];
+            getStoreData().then(() => __awaiter(void 0, void 0, void 0, async function* () {
+                for (const e of ids) {
+                    try {
+                        console.log('HACIENDO PETICION DE DATOS DE TIENDA A TIENDA NUVE');
+                        console.log('A LA URL :', `https://api.tiendanube.com/v1/${req.query.store}/orders/${e}`);
+                        
+                        const response = yield fetch(`https://api.tiendanube.com/v1/${req.query.store}/orders/${e}`, {
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authentication': `bearer ${store_data.access_token}`,
+                                'User-Agent': 'Flash Now Entrepreneurs (emm.matiasacevedosiciliano@gmail.com)',
+                            }
+                        });
+                        const data = yield response.json();
+                        
+                        console.log('------------------------------------------ NUEVO PEDIDO ENVIANDOSE A RESERVAS -----------------------------------------');
+                        ids_enviados.push(e);
+                        
+                        // Código para insertar en la base de datos
+                        // ...
+    
+                        // Hacer la carga a flash
+                        let envio_flash = {
+                            id_envio: e,
+                            mail: store_data.email,
+                            fecha_retiro: new Date(mañana).toLocaleDateString(),
+                            id_tienda: store_data.user_id,
+                            contacto_tienda: store_data.contacto_tienda,
+                            direccion_tienda: store_data.direccion,
+                            telefono_tienda: store_data.whatsapp,
+                            fecha_entrega: new Date(pasado_mañana).toLocaleDateString(),
+                            precio_envio: data.shipping_cost_owner,
+                            nombre_cliente: data.contact_name,
+                            direccion_cliente: `${data.shipping_address.address} ${data.shipping_address.number}, ${data.shipping_address.floor} ${data.shipping_address.city}`,
+                            telefono_cliente: data.contact_phone,
+                            metodo_pago: store_data.metodo_pago,
+                            mail_cliente: data.contact_email
+                        };
+    
+                        // Esperar a que enviarDatos se resuelva
+                        await enviarDatos(envio_flash);
+                        
+                        console.log(data);
+                        
+                        // Hacer el informe de status de envío
+                        let body1 = {
+                            shipping_tracking_number: `${data.id}`,
+                            shipping_tracking_url: "https://app-tienda-nube.onrender.com/estado_envio",
+                            notify_customer: true
+                        };
+                        let body2 = JSON.stringify(body1);
+                        await fetch(`https://api.tiendanube.com/v1/${req.query.store}/orders/${e}/fulfill`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authentication': `bearer ${store_data.access_token}`,
+                                'User-Agent': 'Flash Now Entrepreneurs (emm.matiasacevedosiciliano@gmail.com)',
+                            },
+                            body: body2
+                        });
+                    } catch (error) {
+                        console.error('Error en la petición:', error);
+                        reject(error); // Rechaza la promesa si hay un error
+                    }
+                }
+                console.log('-----------------------------------ids_enviados', ids_enviados);
+                resolve(); // Resuelve la promesa al final
+            }));
+        });
     };
+
     yield pro().then(() => {
         //console.log(`+++++++++++++++++++++++++++++++++++++++++++++++++++++++ ${items1}`)
         res.render(path_1.default.join(__dirname,'../vistas/confirmacion.pug'),{
