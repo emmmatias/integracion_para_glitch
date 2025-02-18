@@ -651,7 +651,7 @@ function buscar_origen(id) {
 routes.post("/costos",  async (req, res) => {
 
     console.log('NUEVO PEDIDO')
-    console.log(`el cp de origen es ${req.body.origin.postal_code} el de destino es ${req.body.destination.postal_code}`)
+    
     let req_body = req.body;
     const tomorrow = new Date(new Date().getTime());
     const pasado_mañana2 = new Date(new Date().getTime() + ((24 * 60 * 60 * 1000) * 5));
@@ -673,7 +673,7 @@ routes.post("/costos",  async (req, res) => {
     let zona_destino;
     let zona_origen;
     let costo_destino = 0;
-    let cp_origen = await buscar_origen(req.body.store_id)
+    let cp_origen = req.body.origin.postal_code
     let cp_destino = req.body.destination.postal_code;
     let items = req.body.items;
     let aux = 0;
@@ -688,6 +688,7 @@ routes.post("/costos",  async (req, res) => {
     let price;
     const compare = () => {
         return new Promise((resolve, reject) => {
+            console.log(`el cp de origen es ${req.body.origin.postal_code} el de destino es ${req.body.destination.postal_code}`)
             fs_1.default.createReadStream(path_1.default.join(__dirname, 'cps.csv')).pipe((0, csv_parser_1.default)()).on('data', row => {
                 if (Number(cp_origen) <= 1499 && Number(cp_origen) >= 1000 && foundOrigin == false) {
                     zona_origen = 'CABA';
@@ -725,7 +726,7 @@ routes.post("/costos",  async (req, res) => {
                 }
             }).on('end', () => {
                 if (!foundOrigin || !foundDestination) {
-                    reject(new Error('Códigos postales no encontrados'));
+                    reject('Códigos postales no encontrados');
                 }
             });
         });
