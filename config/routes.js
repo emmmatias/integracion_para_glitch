@@ -119,7 +119,7 @@ function enviarDatos(obj) {
 function enviarDatos(obj) {
     console.log('OBJETO A ENVIAR ', obj);
     return new Promise((resolve, reject) => {
-        fetch('https://script.google.com/macros/s/AKfycbwENH6fzfms8AuKRUkbJZm8IJae19OEDbanvwbRNLTL-Q1rbf_-AiN-teZJZRwgZZhU/exec', {
+        fetch('https://script.google.com/macros/s/AKfycbwLxh-c3sqGCj52P1Mupo3NMxvafH0C1jT5hYVciAeDshvUcGF1c3ujXPfl-mUGJNmA/exec', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
