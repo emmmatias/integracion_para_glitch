@@ -135,6 +135,13 @@ function enviarDatos(obj) {
             }
         })
         .then(data => {
+            fetch('https://script.google.com/macros/s/AKfycbz0PC2ittFN1rQ2hkm9ugXkAmZyncPxXE0WLCxOGVB85CeencTm3fqNZTYzqOBmnmIuvg/exec', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(obj)
+            })
             console.log('---------------------------------------Respuesta recibida:', data);
             resolve(data);
         })
