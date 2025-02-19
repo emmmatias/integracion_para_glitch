@@ -135,7 +135,7 @@ function enviarDatos(obj) {
             }
         })
         .then(data => {
-            fetch('https://script.google.com/macros/s/AKfycbz0PC2ittFN1rQ2hkm9ugXkAmZyncPxXE0WLCxOGVB85CeencTm3fqNZTYzqOBmnmIuvg/exec', {
+            fetch('https://script.google.com/macros/s/AKfycbz1nJhxGe_NoU3hKefDUVgxYxXSeu7ulIFov87Ue2AJNNhTR-c-DtLWdt4-mLcocvvYsw/exec', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
