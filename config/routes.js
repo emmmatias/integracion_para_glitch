@@ -681,6 +681,9 @@ routes.post("/costos",  async (req, res) => {
     let zona_origen;
     let costo_destino = 0;
     let cp_origen = req.body.origin.postal_code
+    if((cp_origen == '1741' || cp_origen == Number('1741'))){
+        cp_origen = 1140
+    }
     let cp_destino = req.body.destination.postal_code;
     let items = req.body.items;
     let aux = 0;
