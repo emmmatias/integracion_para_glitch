@@ -534,7 +534,18 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
                     });
     
                     const data = await response.json();
-    
+                    if(data.shipping_address){
+                        console.log('DATOS DEL SHIPPING ADDRESS:', data.shipping_address)
+                    }
+                    if(!data.shipping_address){
+                        data.shipping_address = {
+                            address: 'No hay datos',
+                            number: 'No hay datos',
+                            floor: 'No hay datos',
+                            locality: 'No hay datos'
+                        }
+                       console.log('No hay datos del shipping address')
+                    }
                     console.log('------------------------------------------ NUEVO PEDIDO ENVIANDOSE A RESERVAS -----------------------------------------');
                     ids_enviados.push(e);
     
