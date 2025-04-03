@@ -17,7 +17,7 @@ const passport_1 = __importDefault(require("passport"));
 const path_1 = __importDefault(require("path"));
 const auth_1 = require("../features/auth");
 const product_1 = require("../features/product");
-const { time } = require("console");
+const { time, error } = require("console");
 const { READONLY } = require("sqlite3");
 const dotenv_1 = __importDefault(require("dotenv"))
 const sqlite3_1 = __importDefault(require("sqlite3"));
@@ -89,32 +89,6 @@ routes.get("/admin", (req, res) =>{
         }
     })
 })
-/*
-function enviarDatos(obj) {
-    console.log('OBJETO A ENVIAR ', obj)
-    fetch('https://script.google.com/macros/s/AKfycbwxCvw9vx7jWaRjHfQh7UaRlVz4FWCM4ttf8mdsl1oxD0rzx8LMpG04cUHm75BTzs_u/exec', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(obj)
-    })
-    .then(response => {
-        if (!response.ok) {
-            console.log(`----------------------------------Error: ${response.status} ${response.statusText}`);
-        }
-        if(response.ok){
-            return response.json(); 
-        }
-        
-    })
-    .then(data => {
-        console.log('---------------------------------------Respuesta recibida:', data);
-    })
-    .catch(error => {
-        console.error('--------------------------------------Error al enviar datos:', error);
-    });
-}*/
 
 function enviarDatos(obj) {
     console.log('OBJETO A ENVIAR ', obj);
@@ -666,23 +640,15 @@ function buscar_origen(id) {
     });
 }
 
-routes.post("/costos",  async (req, res) => {
+routes.post("/costos_web", async (req, res) => {
 
-    console.log('NUEVO PEDIDO')
-    
-    let req_body = req.body;
-    const tomorrow = new Date(new Date().getTime());
-    const pasado_mañana2 = new Date(new Date().getTime() + ((24 * 60 * 60 * 1000) * 5));
-    function fecha(t) {
-        const year = t.getFullYear();
-        const month = String(t.getMonth() + 1).padStart(2, '0');
-        const day = String(t.getDate()).padStart(2, '0');
-        const hour = String(t.getHours()).padStart(2, '0');
-        const minutes = String(t.getMinutes()).padStart(2, '0');
-        const seconds = String(t.getSeconds()).padStart(2, '0');
-        return `${year}-${month}-${day}T${hour}:${minutes}:${seconds}-0300`;
-    }
-    let volmaxmoto = 4000;
+    let req_body = req.body
+    console.log('COSTO WEB PARA: ', req.body)
+    let vol_total = req_body.volumen ? req_body.volumen : 3999
+    let total_paq = req_body.paquetes ? req_body.paquetes : 1
+    let price = 0
+    let medidas
+    let volmaxmoto = 3999;
     let foundOrigin = false;
     let foundDestination = false;
     let costo_origen = 0;
@@ -691,92 +657,527 @@ routes.post("/costos",  async (req, res) => {
     let zona_destino;
     let zona_origen;
     let costo_destino = 0;
-    let cp_origen = req.body.origin.postal_code
-    if((cp_origen == '1741' || cp_origen == Number('1741'))){
-        cp_origen = 1140
-    }
-    let cp_destino = req.body.destination.postal_code;
-    let items = req.body.items;
-    let aux = 0;
-    let vol_total = calc(items);
-    function calc(items) {
-        items.forEach((element) => {
-            aux = aux + (element.dimensions.width * element.dimensions.height * element.dimensions.depth);
-        });
-        return aux;
-    }
-    console.log(` volumen de pedido ${vol_total}`);
-    let price;
-    const compare = () => {
+    let cp_origen = Number(req_body.origen)
+    let cp_destino = Number(req_body.destino)
+    /*
+    const compare1 = () => {
         return new Promise((resolve, reject) => {
-            console.log(`el cp de origen es ${req.body.origin.postal_code} el de destino es ${req.body.destination.postal_code}`)
             fs_1.default.createReadStream(path_1.default.join(__dirname, 'cps.csv')).pipe((0, csv_parser_1.default)()).on('data', row => {
-                if (Number(cp_origen) <= 1499 && Number(cp_origen) >= 1000 && foundOrigin == false) {
-                    zona_origen = 'CABA';
-                    cordon_origen = 'CABA';
-                    vol_total < volmaxmoto ? costo_origen = 4100 : costo_origen = 4600;
-                    foundOrigin = true;
-                }
-                if (Number(cp_destino) <= 1499 && Number(cp_destino) >= 1000 && foundDestination == false) {
-                    zona_destino = 'CABA';
-                    cordon_destino = 'CABA';
-                    vol_total < volmaxmoto ? costo_destino = 4100 : costo_destino = 4600;
-                    foundDestination = true;
-                }
-                if (cp_origen == row.cp && foundOrigin == false) {
-                    zona_origen = row.zona;
-                    cordon_origen = row.cordon;
-                    vol_total > volmaxmoto ? costo_origen = row.auto : costo_origen = row.moto;
-                    foundOrigin = true;
-                }
-                if (cp_destino == row.cp && foundDestination == false) {
-                    zona_destino = row.zona;
-                    cordon_destino = row.cordon;
-                    vol_total > volmaxmoto ? costo_destino = row.auto : costo_destino = row.moto;
-                    foundDestination = true;
-                }
-                if (foundDestination == true && foundOrigin == true) {
-                    costo_destino >= costo_origen ? price = costo_destino : price = costo_origen;
-                    if (zona_destino != 'CABA' && zona_origen != 'CABA' && zona_destino != zona_origen) {
-                        cordon_origen == 'cordon 1' ? price = Number(price) + 500 : price;
-                        cordon_origen == 'cordon 2' ? price = Number(price) + 1000 : price;
-                        cordon_origen == 'cordon 3' ? price = Number(price) + 2500 : price;
+                if(cp_origen == 1400 && foundOrigin == false){
+                    cordon_origen = "CABA"
+                    zona_origen = "CABA"
+                    if(vol_total > volmaxmoto){
+                        costo_destino = 4600
                     }
-                    resolve();
-                    return false;
+                    if(vol_total <= volmaxmoto){
+                        costo_destino = 4100
+                    }
+                    foundOrigin = true
+                }
+                if(cp_destino == 1400 && foundDestination == false){
+                    cordon_destino = "CABA"
+                    zona_destino = "CABA"
+                    if(vol_total > volmaxmoto){
+                        costo_destino = 4600
+                    }
+                    if(vol_total <= volmaxmoto){
+                        costo_destino = 4100
+                    }
+                    foundDestination = true
+                }
+                if(row.cp == cp_origen && foundOrigin == false){
+                    cordon_origen = row.cordon
+                    zona_origen = row.zona
+                    if(vol_total > volmaxmoto){
+                        costo_destino = row.auto
+                    }
+                    if(vol_total <= volmaxmoto){
+                        costo_destino = row.moto
+                    }
+                    foundOrigin = true
+                }
+                if(row.cp == cp_destino && foundDestination == false){
+                    cordon_destino = row.cordon
+                    zona_destino = row.zona
+                    if(vol_total > volmaxmoto){
+                        costo_destino = row.auto
+                    }
+                    if(vol_total <= volmaxmoto){
+                        costo_destino = row.moto
+                    }
+                    foundDestination = true
+                }
+                //calculos de extras * zonas para no caba
+                if(cordon_origen != "CABA" && cordon_destino != "CABA"){
+                    if(zona_origen == "zonanorte" && cordon_origen == "cordon 1" && zona_destino != zona_origen){
+                        costo_origen = costo_origen + 1000
+                        costo_destino = costo_destino + 1000
+                    }
+                    else if(zona_origen == "zonanorte" && cordon_origen == "cordon 2" && zona_destino != zona_origen){
+                        if(cordon_destino == "cordon 1"){
+                            costo_origen = costo_origen + 1000
+                            costo_destino = costo_destino + 1000
+                        }
+                        else if(cordon_destino == "cordon 2" || cordon_destino == "cordon 3"){
+                            costo_origen = costo_origen + 2000
+                            costo_destino = costo_destino + 2000
+                        }
+                    }
+                    else if(zona_origen == "zonanorte" && cordon_origen == "cordon 3" && zona_destino != zona_origen){
+                        if(cordon_destino == "cordon 1"){
+                            costo_origen = costo_origen + 1000
+                            costo_destino = costo_destino + 1000
+                        }
+                        else if(cordon_destino == "cordon 2"){
+                            costo_origen = costo_origen + 2000
+                            costo_destino = costo_destino + 2000
+                        }
+                        else if(cordon_destino == "cordon 3"){
+                            costo_origen = costo_origen + 4000
+                            costo_destino = costo_destino + 4000
+                        }
+                    }
+                    else if(zona_origen == "zonaoeste" && cordon_origen == "cordon 1" && zona_destino != zona_origen){
+                        if(cordon_destino == "cordon 1"){
+                            costo_origen = costo_origen + 1000
+                            costo_destino = costo_destino + 1000
+                        }
+                        else if(cordon_destino == "cordon 2"){
+                            costo_origen = costo_origen + 1000
+                            costo_destino = costo_destino + 1000
+                        }
+                        else if(cordon_destino == "cordon 3"){
+                            costo_origen = costo_origen + 1000
+                            costo_destino = costo_destino + 1000
+                        }
+                    }
+                    else if(zona_origen == "zonaoeste" && cordon_origen == "cordon 2" && zona_destino != zona_origen){
+                        if(cordon_destino == "cordon 1"){
+                            costo_origen = costo_origen + 1000
+                            costo_destino = costo_destino + 1000
+                        }
+                        else if(cordon_destino == "cordon 2" || cordon_destino == "cordon 3"){
+                            costo_origen = costo_origen + 2000
+                            costo_destino = costo_destino + 2000
+                        }
+                    }
+                    else if(zona_origen == "zonaoeste" && cordon_origen == "cordon 3" && zona_destino != zona_origen){
+                        if(cordon_destino == "cordon 1"){
+                            costo_origen = costo_origen + 1000
+                            costo_destino = costo_destino + 1000
+                        }
+                        else if(cordon_destino == "cordon 2"){
+                            costo_origen = costo_origen + 2000
+                            costo_destino = costo_destino + 2000
+                        }
+                        else if(cordon_destino == "cordon 3"){
+                            costo_origen = costo_origen + 4000
+                            costo_destino = costo_destino + 4000
+                        }
+                    }
+                    else if(zona_origen == "zonasur" && cordon_origen == "cordon 1" && zona_destino != zona_origen){
+                        if(cordon_destino == "cordon 1"){
+                            costo_origen = costo_origen + 1000
+                            costo_destino = costo_destino + 1000
+                        }
+                        else if(cordon_destino == "cordon 2"){
+                            costo_origen = costo_origen + 1000
+                            costo_destino = costo_destino + 1000
+                        }
+                        else if(cordon_destino == "cordon 3"){
+                            costo_origen = costo_origen + 1000
+                            costo_destino = costo_destino + 1000
+                        }
+                    }
+                    else if(zona_origen == "zonasur" && cordon_origen == "cordon 2" && zona_destino != zona_origen){
+                        if(cordon_destino == "cordon 1"){
+                            costo_origen = costo_origen + 1000
+                            costo_destino = costo_destino + 1000
+                        }
+                        else if(cordon_destino == "cordon 2" || cordon_destino == "cordon 3"){
+                            costo_origen = costo_origen + 2000
+                            costo_destino = costo_destino + 2000
+                        }
+                    }
+                    else if(zona_origen == "zonasur" && cordon_origen == "cordon 1" && zona_destino != zona_origen){
+                        if(cordon_destino == "cordon 1"){
+                            costo_origen = costo_origen + 1000
+                            costo_destino = costo_destino + 1000
+                        }
+                        else if(cordon_destino == "cordon 2"){
+                            costo_origen = costo_origen + 2000
+                            costo_destino = costo_destino + 2000
+                        }
+                        else if(cordon_destino == "cordon 3"){
+                            costo_origen = costo_origen + 3000
+                            costo_destino = costo_destino + 3000
+                        }
+                    }
+                }
+                //calculos de extras * paquetes
+                //eliminamos el paquete más grande (hasta el límite grande)
+                if(req_body.paquete.length > 1){
+                    medidas = req_body.paquete.map(subArray => subArray.reduce((acc, val) => acc * val, 1)).sort((x, y) => y - x)
+                    if(Number(medidas[0]) - 64000 <= 0){
+                        medidas.shift()
+                    }
+                    else{
+                        medidas[0] = medidas[0] - 64000
+                    }
+                    medidas.forEach(e => {
+                        if(e <= 20*20*10){
+                            costo_origen = costo_origen + 1000
+                            costo_destino = costo_destino + 1000
+                        }
+                        else if(e <= 40*40*40){
+                            costo_origen = costo_origen + 2000
+                            costo_destino = costo_destino + 2000
+                        }
+                        else if(e <= 50*50*40){
+                            costo_origen = costo_origen + 3000
+                            costo_destino = costo_destino + 3000
+                        }
+                        else if(e > 50*50*40){
+                            costo_origen = "Demasiado grande, contactese con nosotros directamente"
+                            costo_destino = "Demasiado grande, contactese con nosotros directamente"
+                        }
+                    })
                 }
             }).on('end', () => {
                 if (!foundOrigin || !foundDestination) {
                     reject('Códigos postales no encontrados');
                 }
-            });
-        });
-    };
-    compare().then(() => {
-        let obj = {
-            rates: [
-                {
-                    name: "FLASH NOW ENVIOS Express",
-                    code: "express",
-                    price: Number(price),
-                    price_merchant: Number(price),
-                    currency: "ARS",
-                    type: "ship",
-                    min_delivery_date: fecha(tomorrow),
-                    max_delivery_date: fecha(pasado_mañana2),
-                    phone_required: true,
-                    reference: "ref123"
+                else {
+                    resolve()
                 }
-            ]
-        };
-        console.log(obj);
-        res.json(obj);
-    }).catch((error) => {
+            })            
+        })
+    }*/
+
+        const compare1 = () => {
+            return new Promise((resolve, reject) => {
+              let extraZonaAplicado = false;
+              let extraMedidasAplicado = false;
+          
+              fs_1.default.createReadStream(path_1.default.join(__dirname, 'cps.csv'))
+                .pipe((0, csv_parser_1.default)())
+                .on('data', row => {
+                  if (cp_origen == 1400 && foundOrigin == false) {
+                    cordon_origen = "CABA";
+                    zona_origen = "CABA";
+                    if (vol_total > volmaxmoto) {
+                      costo_destino = 4600;
+                    }
+                    if (vol_total <= volmaxmoto) {
+                      costo_destino = 4100;
+                    }
+                    foundOrigin = true;
+                  }
+                  
+                  if (cp_destino == 1400 && foundDestination == false) {
+                    cordon_destino = "CABA";
+                    zona_destino = "CABA";
+                    if (vol_total > volmaxmoto) {
+                      costo_destino = 4600;
+                    }
+                    if (vol_total <= volmaxmoto) {
+                      costo_destino = 4100;
+                    }
+                    foundDestination = true;
+                  }
+                  
+                  if (row.cp == cp_origen && foundOrigin == false) {
+                    cordon_origen = row.cordon;
+                    zona_origen = row.zona;
+                    if (vol_total > volmaxmoto) {
+                      costo_destino = Number(row.auto);
+                    }
+                    if (vol_total <= volmaxmoto) {
+                      costo_destino = Number(row.moto);
+                    }
+                    foundOrigin = true;
+                  }
+                  
+                  if (row.cp == cp_destino && foundDestination == false) {
+                    cordon_destino = row.cordon;
+                    zona_destino = row.zona;
+                    if (vol_total > volmaxmoto) {
+                      costo_destino = Number(row.auto);
+                    }
+                    if (vol_total <= volmaxmoto) {
+                      costo_destino = Number(row.moto);
+                    }
+                    foundDestination = true;
+                  }
+          
+                  // Cálculos de extras * zonas para no CABA (solo una vez)
+                  if (!extraZonaAplicado && cordon_origen != "CABA" && cordon_destino != "CABA") {
+                    if (zona_origen == "zonanorte" && cordon_origen == "cordon 1" && zona_destino != zona_origen) {
+                      costo_origen += 1000;
+                      costo_destino += 1000;
+                      extraZonaAplicado = true;
+                    }
+                    else if (zona_origen == "zonanorte" && cordon_origen == "cordon 2" && zona_destino != zona_origen) {
+                      if (cordon_destino == "cordon 1") {
+                        costo_origen += 1000;
+                        costo_destino += 1000;
+                      } else if (cordon_destino == "cordon 2" || cordon_destino == "cordon 3") {
+                        costo_origen += 2000;
+                        costo_destino += 2000;
+                      }
+                      extraZonaAplicado = true;
+                    }
+                    else if (zona_origen == "zonanorte" && cordon_origen == "cordon 3" && zona_destino != zona_origen) {
+                      if (cordon_destino == "cordon 1") {
+                        costo_origen += 1000;
+                        costo_destino += 1000;
+                      } else if (cordon_destino == "cordon 2") {
+                        costo_origen += 2000;
+                        costo_destino += 2000;
+                      } else if (cordon_destino == "cordon 3") {
+                        costo_origen += 4000;
+                        costo_destino += 4000;
+                      }
+                      extraZonaAplicado = true;
+                    }
+                    else if (zona_origen == "zonaoeste" && cordon_origen == "cordon 1" && zona_destino != zona_origen) {
+                      if (cordon_destino == "cordon 1") {
+                        costo_origen += 1000;
+                        costo_destino += 1000;
+                      } else if (cordon_destino == "cordon 2") {
+                        costo_origen += 1000;
+                        costo_destino += 1000;
+                      } else if (cordon_destino == "cordon 3") {
+                        costo_origen += 1000;
+                        costo_destino += 1000;
+                      }
+                      extraZonaAplicado = true;
+                    }
+                    else if (zona_origen == "zonaoeste" && cordon_origen == "cordon 2" && zona_destino != zona_origen) {
+                      if (cordon_destino == "cordon 1") {
+                        costo_origen += 1000;
+                        costo_destino += 1000;
+                      } else if (cordon_destino == "cordon 2" || cordon_destino == "cordon 3") {
+                        costo_origen += 2000;
+                        costo_destino += 2000;
+                      }
+                      extraZonaAplicado = true;
+                    }
+                    else if (zona_origen == "zonaoeste" && cordon_origen == "cordon 3" && zona_destino != zona_origen) {
+                      if (cordon_destino == "cordon 1") {
+                        costo_origen += 1000;
+                        costo_destino += 1000;
+                      } else if (cordon_destino == "cordon 2") {
+                        costo_origen += 2000;
+                        costo_destino += 2000;
+                      } else if (cordon_destino == "cordon 3") {
+                        costo_origen += 4000;
+                        costo_destino += 4000;
+                      }
+                      extraZonaAplicado = true;
+                    }
+                    else if (zona_origen == "zonasur" && cordon_origen == "cordon 1" && zona_destino != zona_origen) {
+                      if (cordon_destino == "cordon 1") {
+                        costo_origen += 1000;
+                        costo_destino += 1000;
+                      } else if (cordon_destino == "cordon 2") {
+                        costo_origen += 1000;
+                        costo_destino += 1000;
+                      } else if (cordon_destino == "cordon 3") {
+                        costo_origen += 1000;
+                        costo_destino += 1000;
+                      }
+                      extraZonaAplicado = true;
+                    }
+                    else if (zona_origen == "zonasur" && cordon_origen == "cordon 2" && zona_destino != zona_origen) {
+                      if (cordon_destino == "cordon 1") {
+                        costo_origen += 1000;
+                        costo_destino += 1000;
+                      } else if (cordon_destino == "cordon 2" || cordon_destino == "cordon 3") {
+                        costo_origen += 2000;
+                        costo_destino += 2000;
+                      }
+                      extraZonaAplicado = true;
+                    }
+                    else if (zona_origen == "zonasur" && cordon_origen == "cordon 1" && zona_destino != zona_origen) {
+                      if (cordon_destino == "cordon 1") {
+                        costo_origen += 1000;
+                        costo_destino += 1000;
+                      } else if (cordon_destino == "cordon 2") {
+                        costo_origen += 2000;
+                        costo_destino += 2000;
+                      } else if (cordon_destino == "cordon 3") {
+                        costo_origen += 3000;
+                        costo_destino += 3000;
+                      }
+                      extraZonaAplicado = true;
+                    }
+                  }
+                })
+                .on('end', () => {
+                  if (!foundOrigin || !foundDestination) {
+                    reject('Códigos postales no encontrados');
+                  } else {
+                    // Cálculos de extras * paquetes (solo una vez)
+                    if (!extraMedidasAplicado && req_body.paquete.length > 1) {
+                      medidas = req_body.paquete.map(subArray => subArray.reduce((acc, val) => acc * val, 1))
+                        .sort((x, y) => y - x);
+                      
+                      if (Number(medidas[0]) - 64000 <= 0) {
+                        medidas.shift();
+                      } else {
+                        medidas[0] = medidas[0] - 64000;
+                      }
+          
+                      // Aplicar el extra de medidas solo una vez según el paquete más grande restante
+                      if (medidas.length > 0) {
+                        const medidaMasGrande = medidas[0];
+                        if (medidaMasGrande <= 202010) {
+                          costo_origen += 1000;
+                          costo_destino += 1000;
+                        } else if (medidaMasGrande <= 404040) {
+                          costo_origen += 2000;
+                          costo_destino += 2000;
+                        } else if (medidaMasGrande <= 505040) {
+                          costo_origen += 3000;
+                          costo_destino += 3000;
+                        } else if (medidaMasGrande > 505040) {
+                          costo_origen = "Demasiado grande, contactese con nosotros directamente";
+                          costo_destino = "Demasiado grande, contactese con nosotros directamente";
+                        }
+                        extraMedidasAplicado = true;
+                      }
+                    }
+                    resolve();
+                  }
+                });
+            });
+          };
+
+    compare1().then(() => {
+        return res.json({
+            message: "pop",
+            calculo: costo_destino >= costo_origen ? costo_destino : costo_origen 
+        })}).catch((error) => {
         console.log(error);
         res.statusMessage = 'No hay CPA encontrado';
         res.sendStatus(404);
-    });
-});
+    })
+
+})
+
+routes.post("/costos",  async (req, res) => {
+
+    console.log('NUEVO PEDIDO')
+    
+    let req_body = req.body;
+        const tomorrow = new Date(new Date().getTime());
+        const pasado_mañana2 = new Date(new Date().getTime() + ((24 * 60 * 60 * 1000) * 5));
+        function fecha(t) {
+            const year = t.getFullYear();
+            const month = String(t.getMonth() + 1).padStart(2, '0');
+            const day = String(t.getDate()).padStart(2, '0');
+            const hour = String(t.getHours()).padStart(2, '0');
+            const minutes = String(t.getMinutes()).padStart(2, '0');
+            const seconds = String(t.getSeconds()).padStart(2, '0');
+            return `${year}-${month}-${day}T${hour}:${minutes}:${seconds}-0300`;
+        }
+        let volmaxmoto = 4000;
+        let foundOrigin = false;
+        let foundDestination = false;
+        let costo_origen = 0;
+        let cordon_origen;
+        let cordon_destino;
+        let zona_destino;
+        let zona_origen;
+        let costo_destino = 0;
+        let cp_origen = req.body.origin.postal_code
+        if((cp_origen == '1741' || cp_origen == Number('1741'))){
+            cp_origen = 1140
+        }
+        let cp_destino = req.body.destination.postal_code;
+        let items = req.body.items;
+        let aux = 0;
+        let vol_total = calc(items);
+        function calc(items) {
+            items.forEach((element) => {
+                aux = aux + (element.dimensions.width * element.dimensions.height * element.dimensions.depth);
+            });
+            return aux;
+        }
+        console.log(` volumen de pedido ${vol_total}`);
+        let price;
+        const compare = () => {
+            return new Promise((resolve, reject) => {
+                console.log(`el cp de origen es ${req.body.origin.postal_code} el de destino es ${req.body.destination.postal_code}`)
+                fs_1.default.createReadStream(path_1.default.join(__dirname, 'cps.csv')).pipe((0, csv_parser_1.default)()).on('data', row => {
+                    if (Number(cp_origen) <= 1499 && Number(cp_origen) >= 1000 && foundOrigin == false) {
+                        zona_origen = 'CABA';
+                        cordon_origen = 'CABA';
+                        vol_total < volmaxmoto ? costo_origen = 4100 : costo_origen = 4600;
+                        foundOrigin = true;
+                    }
+                    if (Number(cp_destino) <= 1499 && Number(cp_destino) >= 1000 && foundDestination == false) {
+                        zona_destino = 'CABA';
+                        cordon_destino = 'CABA';
+                        vol_total < volmaxmoto ? costo_destino = 4100 : costo_destino = 4600;
+                        foundDestination = true;
+                    }
+                    if (cp_origen == row.cp && foundOrigin == false) {
+                        zona_origen = row.zona;
+                        cordon_origen = row.cordon;
+                        vol_total > volmaxmoto ? costo_origen = row.auto : costo_origen = row.moto;
+                        foundOrigin = true;
+                    }
+                    if (cp_destino == row.cp && foundDestination == false) {
+                        zona_destino = row.zona;
+                        cordon_destino = row.cordon;
+                        vol_total > volmaxmoto ? costo_destino = row.auto : costo_destino = row.moto;
+                        foundDestination = true;
+                    }
+                    if (foundDestination == true && foundOrigin == true) {
+                        costo_destino >= costo_origen ? price = costo_destino : price = costo_origen;
+                        if (zona_destino != 'CABA' && zona_origen != 'CABA' && zona_destino != zona_origen) {
+                            cordon_origen == 'cordon 1' ? price = Number(price) + 500 : price;
+                            cordon_origen == 'cordon 2' ? price = Number(price) + 1000 : price;
+                            cordon_origen == 'cordon 3' ? price = Number(price) + 2500 : price;
+                        }
+                        resolve();
+                        return false;
+                    }
+                }).on('end', () => {
+                    if (!foundOrigin || !foundDestination) {
+                        reject('Códigos postales no encontrados');
+                    }
+                });
+            });
+        };
+        compare().then(() => {
+            let obj = {
+                rates: [
+                    {
+                        name: "FLASH NOW ENVIOS Express",
+                        code: "express",
+                        price: Number(price),
+                        price_merchant: Number(price),
+                        currency: "ARS",
+                        type: "ship",
+                        min_delivery_date: fecha(tomorrow),
+                        max_delivery_date: fecha(pasado_mañana2),
+                        phone_required: true,
+                        reference: "ref123"
+                    }
+                ]
+            };
+            console.log(obj);
+            res.json(obj);
+        }).catch((error) => {
+            console.log(error);
+            res.statusMessage = 'No hay CPA encontrado';
+            res.sendStatus(404);
+        });
+})
+
 routes.get("/auth/install", auth_1.AuthenticationController.install);
 routes.post("/products", passport_1.default.authenticate("jwt", { session: false }), product_1.ProductController.create);
 routes.get("/products/total", passport_1.default.authenticate("jwt", { session: false }), product_1.ProductController.getTotal);
