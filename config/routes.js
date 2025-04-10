@@ -93,7 +93,7 @@ routes.get("/admin", (req, res) =>{
 function enviarDatos(obj) {
     console.log('OBJETO A ENVIAR ', obj);
     return new Promise((resolve, reject) => {
-        fetch('https://script.google.com/macros/s/AKfycbyCHpLGBRoqyt2RClB8TyodkJkyvR-KsBDFC82xpCgp9rrJDEG7SJuuDwyoFztNKqtM/exec', {
+        fetch('https://script.google.com/macros/s/AKfycbzRakiKh1xXWvdRFx1YWz-0ePWVzuNPO2CSUEJgS4jJCCQvti9jRqNl9-xuF_TofxIh/exec', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -109,7 +109,7 @@ function enviarDatos(obj) {
             }
         })
         .then(data => {
-            fetch('https://script.google.com/macros/s/AKfycbz1nJhxGe_NoU3hKefDUVgxYxXSeu7ulIFov87Ue2AJNNhTR-c-DtLWdt4-mLcocvvYsw/exec', {
+            fetch('https://script.google.com/macros/s/AKfycbzRakiKh1xXWvdRFx1YWz-0ePWVzuNPO2CSUEJgS4jJCCQvti9jRqNl9-xuF_TofxIh/exec', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
