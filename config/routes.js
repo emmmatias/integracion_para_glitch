@@ -207,13 +207,53 @@ routes.post("/registro", (req, res) => {
         }
     });
 });
-routes.post('envios_hook', (req, res) => {
+
+routes.post('/envios_hook', (req, res) => {
     let id_pedido = req.body;
     console.log(`NUEVO ENVIO DESDE EL HOOK`);
     console.log(id_pedido);
     res.statusCode = 200;
     res.end('proceso con exito');
 });
+
+
+//ruta para posteo de estados de envios e todo tipo
+routes.post('/estates', (req, res) => {
+    //envios es un array {envios: [{id, estado, obs}]}
+    let {envios, pass} = req.body
+    user_db.run(`
+        CREATE TABLE IF NOT EXISTS ESTADOS(
+        id_envio TEXT,
+        estado TEXT,
+        observaciones TEXT
+        );`)
+    if(pass == process.env.ADMIN){
+        envios.forEach(envio => {
+                user_db.run(`
+                    INSERT INTO ESTADOS (id_envio, estado, observaciones) VALUES (
+                    ?,?,?)`, [envio.id, envio.estado, envio.obs])
+        })
+    }
+})
+
+
+routes.get('/estates', (req, res) => {
+    //busqueda por query_params
+    let {id} = req.query
+    let estado = user_db.get('SELECT * FROM  ESTADOS WHERE id_envio = ?', [id], (err, row) => {
+        if(err) {
+            console.log(err)
+            return res.status(404).send('Lo sentimos no hay registros para ese código')
+        }else if(row){
+            return res.status(200).json(estado)
+        }
+    })
+})
+
+
+
+
+
 /*
 routes.get('/modif', (req, res) => {
     let code = req.query.code
