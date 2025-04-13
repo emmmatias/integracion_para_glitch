@@ -218,22 +218,15 @@ routes.post('/envios_hook', (req, res) => {
 
 
 //ruta para posteo de estados de envios e todo tipo
-routes.post('/estates', (req, res) => {
+routes.post('/estates', async (req, res) => {
     //envios es un array {envios: [{id, estado, obs}]}
     let {envios, pass} = req.body
-    user_db.run(`
-        CREATE TABLE IF NOT EXISTS ESTADOS(
-        id_envio TEXT,
-        estado TEXT,
-        observaciones TEXT
-        );`)
-    if(pass == process.env.ADMIN){
+    console.log(`REQQQQQ: ${envios}`)
         envios.forEach(envio => {
                 user_db.run(`
                     INSERT INTO ESTADOS (id_envio, estado, observaciones) VALUES (
                     ?,?,?)`, [envio.id, envio.estado, envio.obs])
         })
-    }
 })
 
 
