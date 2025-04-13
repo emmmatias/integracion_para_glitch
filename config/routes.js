@@ -386,7 +386,9 @@ routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function
     console.log('++++++++++++++++++++++++++++++++++++++++LOS QUERYS SON:', req.query);
     let ids = req.query.id;
     console.log('LOS IDS SON::::::::::::::::', ids)
-    console.log(typeof (ids));
+    if(typeof(ids) === "string"){
+        ids = [ids]
+    }
     let store_data;
     //obtenemos la data de la tienda
     const getStoreData = () => {
