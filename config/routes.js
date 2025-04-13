@@ -220,7 +220,7 @@ routes.post('/envios_hook', (req, res) => {
 //ruta para posteo de estados de envios e todo tipo
 routes.post('/estates', async (req, res) => {
     //envios es un array {envios: [{id, estado, obs}]}
-    let {envios, pass} = req.body
+    let {envios} = req.body
     console.log(`REQQQQQ: ${envios}`)
         envios.forEach(envio => {
                 user_db.run(`
@@ -238,7 +238,7 @@ routes.get('/estates', (req, res) => {
             console.log(err)
             return res.status(404).send('Lo sentimos no hay registros para ese código')
         }else if(row){
-            return res.status(200).json(estado)
+            return res.status(200).json({id: row.id_envio,estado: row.estado,obs: row.observaciones})
         }
     })
 })
@@ -383,7 +383,6 @@ routes.get("/descarga-db", (req, res) => {
 });
 
 routes.get("/reservas", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('++++++++++++++++++++++++++++++++++++++++LOS QUERYS SON:', req.query);
     let ids = req.query.id;
     console.log('LOS IDS SON::::::::::::::::', ids)
     if(typeof(ids) === "string"){
