@@ -221,7 +221,7 @@ routes.post('/envios_hook', (req, res) => {
 routes.post('/estates', async (req, res) => {
     //envios es un array {envios: [{id, estado, obs}]}
     let body = req.body
-    console.log(`REQQQQQ: ${body}`)
+    console.log(`REQQQQQ: ${JSON.stringify(body)}`)
         body.envios.forEach(envio => {
                 user_db.run(`
                     INSERT INTO ESTADOS (id_envio, estado, observaciones) VALUES (
