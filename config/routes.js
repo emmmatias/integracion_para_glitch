@@ -225,14 +225,16 @@ routes.post('/estates', async (req, res) => {
         body.envios.forEach(envio => {
                 user_db.get(`select * from ESTADOS where id_envio = ?`, [envio.id], (err, row) => {
                     if(err){
-
+                        return res.status(401).send('error')
                     }else if(row){
                         user_db.run(`
                             UPDATE ESTADOS set estado = ?, observaciones = ? where id_envio = ?`, [envio.estado, envio.obs, envio.id])
-                    }else if(!row){
+                            return res.status(201).send('creado')
+                        }else if(!row){
                         user_db.run(`
                             INSERT INTO ESTADOS (id_envio, estado, observaciones) VALUES (
                             ?,?,?)`, [envio.id, envio.estado, envio.obs])
+                            return res.status(201).send('creado')
                     }
                 })
         })
@@ -242,6 +244,7 @@ routes.post('/estates', async (req, res) => {
 routes.get('/estates', async (req, res) => {
     //busqueda por query_params
     let {id} = req.query
+    console.log(req.query)
     await user_db.get('SELECT * FROM  ESTADOS WHERE id_envio = ?', [id], (err, row) => {
         if(err) {
             console.log(err)
