@@ -225,32 +225,34 @@ routes.post('/estates', async (req, res) => {
         body.envios.forEach(envio => {
                 user_db.get(`select * from ESTADOS where id_envio = ?`, [envio.id], (err, row) => {
                     if(err){
-                        return res.status(401).send('error')
+                        res.status(401).send('error')
                     }else if(row){
                         user_db.run(`
                             UPDATE ESTADOS set estado = ?, observaciones = ? where id_envio = ?`, [envio.estado, envio.obs, envio.id])
-                            return res.status(201).send('creado')
                         }else if(!row){
                         user_db.run(`
                             INSERT INTO ESTADOS (id_envio, estado, observaciones) VALUES (
                             ?,?,?)`, [envio.id, envio.estado, envio.obs])
-                            return res.status(201).send('creado')
                     }
                 })
         })
+        return res.status(201).send('actualizado')
 })
 
 
 routes.get('/estates', async (req, res) => {
     //busqueda por query_params
     let {id} = req.query
-    console.log(req.query)
+    console.log(id)
     await user_db.get('SELECT * FROM  ESTADOS WHERE id_envio = ?', [id], (err, row) => {
         if(err) {
             console.log(err)
             return res.status(404).send('Lo sentimos no hay registros para ese código')
         }else if(row){
             return res.status(200).json({id: row.id_envio,estado: row.estado,obs: row.observaciones})
+        }
+        else if(!row){
+            return res.status(404).send('No encontrado')
         }
     })
 })
