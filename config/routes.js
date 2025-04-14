@@ -223,9 +223,18 @@ routes.post('/estates', async (req, res) => {
     let body = await req.body
     console.log(`REQQQQQ: ${JSON.stringify(body)}`)
         body.envios.forEach(envio => {
-                user_db.run(`
-                    INSERT INTO ESTADOS (id_envio, estado, observaciones) VALUES (
-                    ?,?,?)`, [envio.id, envio.estado, envio.obs])
+                user_db.get(`select * from ESTADOS where id_envio = ?`, [envio.id], (err, row) => {
+                    if(err){
+
+                    }else if(row){
+                        user_db.run(`
+                            UPDATE ESTADOS set estado = ?, observaciones = ? where id_envio = ?`, [envio.estado, envio.obs, envio.id])
+                    }else if(!row){
+                        user_db.run(`
+                            INSERT INTO ESTADOS (id_envio, estado, observaciones) VALUES (
+                            ?,?,?)`, [envio.id, envio.estado, envio.obs])
+                    }
+                })
         })
 })
 
