@@ -239,10 +239,10 @@ routes.post('/estates', async (req, res) => {
 })
 
 
-routes.get('/estates', (req, res) => {
+routes.get('/estates', async (req, res) => {
     //busqueda por query_params
     let {id} = req.query
-    let estado = user_db.get('SELECT * FROM  ESTADOS WHERE id_envio = ?', [id], (err, row) => {
+    await user_db.get('SELECT * FROM  ESTADOS WHERE id_envio = ?', [id], (err, row) => {
         if(err) {
             console.log(err)
             return res.status(404).send('Lo sentimos no hay registros para ese código')
@@ -368,7 +368,7 @@ routes.post('/seguimiento', async (req, res) => {
 });
 
 routes.get("/estado_envio", (req, res) =>{
-    res.render(path_1.default.join(__dirname, '../vistas/estado_envio.pug'))
+    res.sendFile(path_1.default.join(__dirname, './estados.html'))
 })
 //ruta para usuarios dentro de tienda nube
 routes.get("/descarga-db", (req, res) => {

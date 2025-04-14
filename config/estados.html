@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Buscar Envío</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: white;
+      margin-top: 80px;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      transition: border 0.3s ease;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #007bff;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #resultado {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f1f3f6;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+
+    #resultado p {
+      margin: 6px 0;
+      font-size: 15px;
+    }
+
+    .error {
+      color: red;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Buscar Envío</h2>
+    <form id="formulario">
+      <label for="id">ID del Envío</label>
+      <input type="text" id="id" name="id" placeholder="Ej. 1686634316" required />
+      <button type="submit">Buscar</button>
+    </form>
+
+    <div id="resultado"></div>
+  </div>
+
+  <script>
+    document.getElementById('formulario').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const id = document.getElementById('id').value;
+      const url = `https://app-tienda-nube.onrender.com/api/estates?id=${id}`;
+      const contenedor = document.getElementById('resultado');
+      contenedor.innerHTML = '';
+
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('No se encontró el envío.');
+
+        const data = await res.json();
+
+        contenedor.innerHTML = `
+          <h3>Resultado:</h3>
+          <p><strong>ID:</strong> ${data.id}</p>
+          <p><strong>Estado:</strong> ${data.estado}</p>
+          <p><strong>Observación:</strong> ${data.obs}</p>
+        `;
+      } catch (error) {
+        contenedor.innerHTML = `<p class="error">❌ ${error.message}</p>`;
+      }
+    });
+  </script>
+</body>
+</html>
