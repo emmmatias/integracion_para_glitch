@@ -93,7 +93,7 @@ routes.get("/admin", (req, res) =>{
 function enviarDatos(obj) {
     console.log('OBJETO A ENVIAR ', obj);
     return new Promise((resolve, reject) => {
-        fetch('https://script.google.com/macros/s/AKfycbzRakiKh1xXWvdRFx1YWz-0ePWVzuNPO2CSUEJgS4jJCCQvti9jRqNl9-xuF_TofxIh/exec', {
+        fetch('https://script.google.com/macros/s/AKfycbyS2bEwyFbNolzeLpCCjLh-l-390voGQ5_NhbMRzsoVG0vaQYGtAkjhCDfm3n-HNNk3/exec', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -109,13 +109,6 @@ function enviarDatos(obj) {
             }
         })
         .then(data => {
-            fetch('https://script.google.com/macros/s/AKfycbzRakiKh1xXWvdRFx1YWz-0ePWVzuNPO2CSUEJgS4jJCCQvti9jRqNl9-xuF_TofxIh/exec', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(obj)
-            })
             console.log('---------------------------------------Respuesta recibida:', data);
             resolve(data);
         })
