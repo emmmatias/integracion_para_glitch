@@ -93,7 +93,7 @@ routes.get("/admin", (req, res) =>{
 function enviarDatos(obj) {
     console.log('OBJETO A ENVIAR ', obj);
     return new Promise((resolve, reject) => {
-        fetch('https://script.google.com/macros/s/AKfycbx5Pzo55p3_AQ2Qu-Q-rFYuSZ7Yd9Ac5gWSsSW_VaUnzZt1BNMwh-58Gje-S1_y3UGU/exec', {
+        fetch('https://script.google.com/macros/s/AKfycbzkRKR4rjUqohe5z8F_R1OdJgVr8XApvlTkccKxWQc3LUcnlJSik_cN6arihoT92lqG/exec', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
