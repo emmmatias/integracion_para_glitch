@@ -1155,13 +1155,13 @@ routes.post("/costos",  async (req, res) => {
                     if (Number(cp_origen) <= 1499 && Number(cp_origen) >= 1000 && foundOrigin == false) {
                         zona_origen = 'CABA';
                         cordon_origen = 'CABA';
-                        vol_total < volmaxmoto ? costo_origen = 4100 : costo_origen = 4600;
+                        vol_total < volmaxmoto ? costo_origen = 4500 : costo_origen = 5000;
                         foundOrigin = true;
                     }
                     if (Number(cp_destino) <= 1499 && Number(cp_destino) >= 1000 && foundDestination == false) {
                         zona_destino = 'CABA';
                         cordon_destino = 'CABA';
-                        vol_total < volmaxmoto ? costo_destino = 4100 : costo_destino = 4600;
+                        vol_total < volmaxmoto ? costo_destino = 4500 : costo_destino = 5000;
                         foundDestination = true;
                     }
                     if (cp_origen == row.cp && foundOrigin == false) {
